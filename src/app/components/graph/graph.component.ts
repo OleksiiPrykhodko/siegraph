@@ -48,10 +48,9 @@ export class GraphComponent {
         }]
       },
       options: {
-        //plugins: {
-        //  legend: false,
-        //  tooltip: true,
-        //},
+        plugins: {
+          legend: {display : false},
+        },
         scales: {
           y: {
             beginAtZero: true
