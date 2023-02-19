@@ -31,32 +31,32 @@ export class GraphComponent {
     this.ShowGraph();
   }
 
-  public lineChartType: ChartType = "line";
-
   // Input information. Send it to html to id of canvas.
-  tagName: string = "tagNameId";
+  private _tagName: string = "tagNameId";
+  private _dataSet = {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: ' Value ',
+      data: [12, 19, 3, 5, 2, 3],
+      borderWidth: 2
+    }]
+  };
+  private _chartOptions = {
+    plugins: {
+      legend: {display : false},
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
 
   ShowGraph(){
-    new Chart(this.tagName, {
+    new Chart(this._tagName, {
       type: 'line',
-      data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-          label: ' Value ',
-          data: [12, 19, 3, 5, 2, 3],
-          borderWidth: 3
-        }]
-      },
-      options: {
-        plugins: {
-          legend: {display : false},
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
+      data: this._dataSet,
+      options: this._chartOptions
     });
   }
 }
