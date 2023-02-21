@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GraphComponent } from './components/graph/graph.component';
+import { GraphAccordionAggregatorComponent } from './components/graph-accordion-aggregator/graph-accordion-aggregator.component';
 
 @Component({
   selector: 'app-root',
