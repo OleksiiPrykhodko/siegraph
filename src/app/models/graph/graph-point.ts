@@ -1,4 +1,10 @@
 export class GraphPoint {
-  x : any;
-  y : any;
+  public readonly X : any;
+  public readonly Y : number;
+
+  constructor(x: any, y: any){
+    this.X = x;
+    this.Y = y;
+  }
+
 }
