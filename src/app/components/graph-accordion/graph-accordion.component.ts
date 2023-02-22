@@ -9,4 +9,6 @@ import { GraphComponent } from '../graph/graph.component';
 })
 export class GraphAccordionComponent {
 
+public _tagName: string = "TagName";
+
 }
