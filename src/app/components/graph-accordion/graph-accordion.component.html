@@ -6,6 +6,8 @@
   </h2>
   <div [id]="'panelsStayOpen-collapse-'+_tagName" class="accordion-collapse collapse show" [attr.aria-labelledby]="'panelsStayOpen-heading-'+_tagName">
     <div class="accordion-body">
+      <button (click)="ShowPreviousPoints()" type="button" class="btn btn-success">Previous 200</button>
+      <button (click)="ShowNextPoints()" type="button" class="btn btn-success">Next 200</button>
       <app-graph [GraphUniqueName] = "_tagName" [GraphPoints]="_points"></app-graph>
     </div>
   </div>

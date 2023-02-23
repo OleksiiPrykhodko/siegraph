@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, AfterContentChecked, OnDestroy} from '@angular/core';
+import { Component, Input, OnInit, AfterContentChecked, OnDestroy, Output, EventEmitter} from '@angular/core';
 import {
   Chart,
   ChartType,
@@ -26,46 +26,32 @@ export class GraphComponent {
 
   @Input() public GraphPoints: GraphPoint[];
   @Input() public GraphUniqueName: string;
+  @Output() public GraphCreatingEvent = new EventEmitter<GraphPoint[]>();
 
   constructor() {
   }
 
   ngOnInit(){
-  this._yAxisDataSet ={
-    // min and max values
-    labels: ['0','1'],
-    datasets: [{
-      // min and max value from incoming data
-      data: [Math.min(...(this.GraphPoints.map(point => point.Y))),
-            Math.max(...(this.GraphPoints.map(point => point.Y)))],
-      borderWidth: 0
-    }]
-  };
-
-  this._currentChartDataSet = {
-    labels: this.GraphPoints.map(point => point.X),
-    datasets: [{
-      label: ' Value ',
-      data: this.GraphPoints.map(point => point.Y),
-      borderWidth: this._lineWidthOnGraph
-    }]
-  };
-
+    this.GraphCreatingEvent.subscribe((points: GraphPoint[]) =>
+    {
+      this._yAxisChart.destroy();
+      this._currentChart.destroy();
+      this.ShowGraph(points);
+    })
   }
 
   ngAfterViewInit(){
-    this.ShowGraph();
+    this.ShowGraph(this.GraphPoints);
   }
 
   ngOnDestroy(){
     this._yAxisChart.destroy();
     this._currentChart.destroy();
+    this.GraphCreatingEvent.unsubscribe();
   }
 
   private _yAxisId: string = "graphYAxis";
-  private _yAxisDataSet : any;
   private _yAxisChart: Chart;
-  private _currentChartDataSet: any;
   private _currentChart: Chart;
 
   private _lineWidthOnGraph: number = 3;
@@ -130,18 +116,38 @@ export class GraphComponent {
     }
   };
 
-  ShowGraph(){
+  ShowGraph(graphPoints: GraphPoint[]){
+    var yAxisDataSet ={
+      // min and max values
+      labels: ['0','1'],
+      datasets: [{
+        // min and max value from incoming data
+        data: [Math.min(...(graphPoints.map(point => point.Y))),
+              Math.max(...(graphPoints.map(point => point.Y)))],
+        borderWidth: 0
+      }]
+    };
+
+    var currentChartDataSet = {
+      labels: graphPoints.map(point => point.X),
+      datasets: [{
+        label: ' Value ',
+        data: graphPoints.map(point => point.Y),
+        borderWidth: this._lineWidthOnGraph
+      }]
+    };
+
     // This is chart only for creating Y axis.
     this._yAxisChart = new Chart(this.YAxisId(), {
       type: 'bar',
-      data: this._yAxisDataSet,
+      data: yAxisDataSet,
       options: this._yAxisChartOptions
     });
 
     // This is real chart.
     this._currentChart = new Chart(this.GraphUniqueName, {
       type: 'line',
-      data: this._currentChartDataSet,
+      data: currentChartDataSet,
       options: this._chartOptions
     });
 
@@ -152,8 +158,7 @@ export class GraphComponent {
       var chartWidth = barLength * this._distanceBetweenPoints;
       box!.style.width = `${chartWidth}px`;
     }
-
-
   }
+
 
 }
