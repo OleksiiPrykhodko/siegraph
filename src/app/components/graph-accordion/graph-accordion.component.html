@@ -1,10 +1,10 @@
 <div class="accordion-item">
-  <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+  <h2 class="accordion-header" [id]="'panelsStayOpen-heading-'+_tagName">
+    <button class="accordion-button" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#panelsStayOpen-collapse-'+_tagName" aria-expanded="true" [attr.aria-controls]="'panelsStayOpen-collapse-'+_tagName">
       {{_tagName}}
     </button>
   </h2>
-  <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+  <div [id]="'panelsStayOpen-collapse-'+_tagName" class="accordion-collapse collapse show" [attr.aria-labelledby]="'panelsStayOpen-heading-'+_tagName">
     <div class="accordion-body">
       <app-graph [GraphUniqueName] = "_tagName" [GraphPoints]="_points"></app-graph>
     </div>
