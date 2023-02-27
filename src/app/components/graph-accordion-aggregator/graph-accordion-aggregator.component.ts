@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ComponentRef, ViewChild, ViewContainerRef} from '@angular/core';
 import { GraphAccordionComponent } from '../graph-accordion/graph-accordion.component';
 import { GraphPoint } from '../../models/graph/graph-point';
 import { TagPoints } from '../../models/graph/tag-points';
@@ -10,10 +10,13 @@ import { TagPoints } from '../../models/graph/tag-points';
 })
 export class GraphAccordionAggregatorComponent {
 
+@ViewChild('accordionsContainer', { read: ViewContainerRef }) private readonly accordionsContainer: ViewContainerRef;
+
   private _file: File;
   private _fileReader: FileReader;
   private _archiveRecords: string[];
   private _uniqueTagsPoints: TagPoints[];
+  private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
 
   public getFile(event: any){
     this._file = event.target.files[0];
@@ -30,6 +33,9 @@ export class GraphAccordionAggregatorComponent {
         this._archiveRecords = fileRecordsArray;
 
         this._uniqueTagsPoints = this.GetUniqueTagsAndPoints(this._archiveRecords);
+        this._uniqueTagsPoints.forEach(tagPoints => {
+          this._graphAccordionRefs.push(this.GenerateGraphAccordion(tagPoints));
+        });
       };
     }
     else{
@@ -42,9 +48,9 @@ export class GraphAccordionAggregatorComponent {
     archiveRecords.forEach((record)=>{
       var recordValues = record.split(",");
       var graphPoint = new GraphPoint(recordValues[1].replace(/["]/g, ""),recordValues[2]);
-      var oneOfTagPairs = tagValuesPaires.find((pair)=> pair.Name === recordValues[0].replace(/["]/g, ""));
+      var oneOfTagPairs = tagValuesPaires.find((pair)=> pair.Name === recordValues[0].replace(/["\s$]/g, ""));
       if(oneOfTagPairs === undefined){
-        tagValuesPaires.push(new TagPoints(recordValues[0].replace(/["]/g, ""), [graphPoint]))
+        tagValuesPaires.push(new TagPoints(recordValues[0].replace(/["\s$]/g, ""), [graphPoint]))
       }
       else{
         oneOfTagPairs?.Points.push(graphPoint);
@@ -52,6 +58,14 @@ export class GraphAccordionAggregatorComponent {
     });
 
     return tagValuesPaires;
+  }
+
+  private GenerateGraphAccordion(points: TagPoints): ComponentRef<GraphAccordionComponent>{
+    var componentRef = this.accordionsContainer.createComponent(GraphAccordionComponent);
+    var componentInstance = componentRef.instance;
+    componentInstance.GraphPoints = points;
+    componentRef.changeDetectorRef.detectChanges();
+    return componentRef;
   }
 
 }

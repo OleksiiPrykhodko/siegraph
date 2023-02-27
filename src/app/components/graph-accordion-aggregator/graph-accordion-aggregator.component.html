@@ -1,6 +1,6 @@
 <div class="input-group mb-5">
   <input (change)="getFile($event)" id="fileInput" class="form-control form-control-lg" type="file" accept=".csv">
 </div>
-<div class="accordion" id="accordionPanelsStayOpenExample">
-  <app-graph-accordion></app-graph-accordion>
+<div class="accordion" id="accordionPanels">
+  <ng-container #accordionsContainer></ng-container>
 </div>
