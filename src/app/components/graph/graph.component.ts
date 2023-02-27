@@ -44,6 +44,7 @@ export class GraphComponent {
     this.ShowGraph(this.GraphPoints);
   }
 
+
   ngOnDestroy(){
     this._yAxisChart.destroy();
     this._currentChart.destroy();
@@ -62,6 +63,10 @@ export class GraphComponent {
 
   public YAxisId(): string{
     return `${this._yAxisId}-${this.GraphUniqueName}`;
+  }
+
+  public GetNameForBox(): string{
+    return `boxFor${this.GraphUniqueName}`;
   }
 
   // Data for seeding:
@@ -151,14 +156,25 @@ export class GraphComponent {
       options: this._chartOptions
     });
 
-    var box = document.querySelector<HTMLElement>(".box");
+    var box = document.querySelector<HTMLElement>("."+this.GetNameForBox());
     var barLength = this._currentChart.data.labels!.length;
 
     if(barLength > this._borderNumberOfPointsForFixedGraphWidth){
       var chartWidth = barLength * this._distanceBetweenPoints;
-      box!.style.width = `${chartWidth}px`;
+      // Set the size for a unique box if the graph has many points.
+      this.SetChartBoxSize(box!, `${chartWidth}px`, '100%');
     }
+    else{
+      // Set the normal size for a unique box if the graph has few points.
+      this.SetChartBoxSize(box!, `100%`, '100%');
+    }
+
   }
 
-
+  private SetChartBoxSize(boxHTMLElement: HTMLElement, width: string, height: string){
+    if(boxHTMLElement !== null){
+      boxHTMLElement.style.width = width;
+      boxHTMLElement.style.height = height;
+    }
+  }
 }
