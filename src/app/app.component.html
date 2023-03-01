@@ -1,23 +1,25 @@
-<!-- NAVBAR -->
-<header>
-  <nav class="navbar shadow bg-body-tertiary">
-    <div class="container">
-      <a class="navbar-brand" href="#">
-        <img src="" alt="brand" width="30" height="24">
-      </a>
-    </div>
-  </nav>
-</header>
+<div class="d-flex flex-column" style="min-height: 100vh;">
 
-<!-- CONTENT -->
-<div class="container my-5 border border-primary" style="min-height: 100vh;">
+  <!-- NAVBAR -->
+  <header>
+    <nav class="navbar shadow bg-body-tertiary">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img src="" alt="brand" width="30" height="24">
+        </a>
+      </div>
+    </nav>
+  </header>
 
-  <!-- AGGREGATOR -->
-  <app-graph-accordion-aggregator></app-graph-accordion-aggregator>
+  <!-- CONTENT -->
+  <div class="container mh-100 flex-grow-1 py-5 border border-primary">
+    <!-- AGGREGATOR -->
+    <app-graph-accordion-aggregator></app-graph-accordion-aggregator>
+  </div>
+
+  <!-- MODAL WINDOW WITH INFO WICH APPEARS AFTER CLICK ON BUTTON IN MENU -->
+  <footer class="container-fluid border border-primary">
+    This if footer
+  </footer>
 
 </div>
-
-<!-- MODAL WINDOW WITH INFO WICH APPEARS AFTER CLICK ON BUTTON IN MENU -->
-<footer class="container-fluid border border-primary">
-  This if footer
-</footer>
