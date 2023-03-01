@@ -43,13 +43,17 @@ public GetFirstPoints(): GraphPoint[]{
 }
 
 public DisplayPreviousPoints(){
-  this._indexOfDisplayedPointsGroup = this._indexOfDisplayedPointsGroup - 1 >= 0 ? this._indexOfDisplayedPointsGroup - 1 : 0;
-  this.ChildGraphComponent.GraphCreatingEvent.emit(this._grupsOfPoints[this._indexOfDisplayedPointsGroup]);
+  if(this._indexOfDisplayedPointsGroup - 1 >= 0){
+    --this._indexOfDisplayedPointsGroup;
+    this.ChildGraphComponent.GraphCreatingEvent.emit(this._grupsOfPoints[this._indexOfDisplayedPointsGroup]);
+  }
 }
 
 public DisplayNextPoints(){
-  this._indexOfDisplayedPointsGroup = this._indexOfDisplayedPointsGroup + 1 < this._grupsOfPoints.length ? this._indexOfDisplayedPointsGroup + 1 : this._indexOfDisplayedPointsGroup;
-  this.ChildGraphComponent.GraphCreatingEvent.emit(this._grupsOfPoints[this._indexOfDisplayedPointsGroup]);
+  if(this._indexOfDisplayedPointsGroup + 1 < this._grupsOfPoints.length){
+    ++this._indexOfDisplayedPointsGroup;
+    this.ChildGraphComponent.GraphCreatingEvent.emit(this._grupsOfPoints[this._indexOfDisplayedPointsGroup]);
+  }
 }
 
 }
