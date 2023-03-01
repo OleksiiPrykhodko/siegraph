@@ -73,7 +73,7 @@ export class GraphAccordionAggregatorComponent {
 
   private SortListOfTagsPoints(listOfTagsPoints: TagPoints[]){
     // Move the HMI device shutdown data to the end of the list.
-    if(listOfTagsPoints !== null && listOfTagsPoints.length > 0){
+    if((listOfTagsPoints !== null) && (listOfTagsPoints.length > 0)){
       let hmiDeviceShutdownData = listOfTagsPoints.pop();
       listOfTagsPoints.sort((a, b) => a.Name.localeCompare(b.Name));
       listOfTagsPoints.push(hmiDeviceShutdownData!);
