@@ -9,11 +9,13 @@ import { TagPoints } from 'src/app/models/graph/tag-points';
   templateUrl: './graph-accordion.component.html',
   styleUrls: ['./graph-accordion.component.scss']
 })
+
 export class GraphAccordionComponent {
 
 ngOnInit(){
   this._tagName = this.GraphPoints.Name;
-  this._points = this.GraphPoints.Points;
+  this._allPoints = this.GraphPoints.Points;
+  this._grupsOfPoints = this.SplitAllPointToGrups(this._allPoints, this._numberOfPointsDisplayedOnGraph);
 }
 
 @Input() public GraphPoints: TagPoints;
@@ -21,38 +23,33 @@ ngOnInit(){
 @ViewChild(GraphComponent) private ChildGraphComponent: GraphComponent;
 
 public _tagName: string = "TagName";
-public _points: GraphPoint[] = [
-//new GraphPoint("2/10/2023 5:45:20 PM", 2147383648),
-//new GraphPoint('2/10/2023 5:45:25 PM', 99543251),
-//new GraphPoint('2/10/2023 5:45:30 PM', 395567546),
-//new GraphPoint("2/10/2023 5:45:35 PM", 1234234234),
-//new GraphPoint("2/10/2023 5:45:40 PM", 223459235),
-//new GraphPoint("2/10/2023 5:45:45 PM", 323549993),
-//new GraphPoint("2/10/2023 5:45:50 PM", 234592359),
-//new GraphPoint("2/10/2023 5:45:55 PM", 93239845),
-//new GraphPoint("2/10/2023 5:46:00 PM", 523499752),
-//new GraphPoint("2/10/2023 5:46:05 PM", 223633342)
-];
+private _allPoints: GraphPoint[] = [];
+private _grupsOfPoints: GraphPoint[][];
+private _numberOfPointsDisplayedOnGraph: number = 200;
+private _indexOfDisplayedPointsGroup: number = 0;
 
-public _points2: GraphPoint[] = [
-  new GraphPoint("2/10/2023 5:45:20 PM", 147383648),
-  new GraphPoint('2/10/2023 5:45:25 PM', 299543251),
-  new GraphPoint('2/10/2023 5:45:30 PM', 395567546),
-  new GraphPoint("2/10/2023 5:45:35 PM", 434234234),
-  new GraphPoint("2/10/2023 5:45:40 PM", 623459235),
-  new GraphPoint("2/10/2023 5:45:45 PM", 523549993),
-  new GraphPoint("2/10/2023 5:45:50 PM", 434592359),
-  new GraphPoint("2/10/2023 5:45:55 PM", 313239845),
-  new GraphPoint("2/10/2023 5:46:00 PM", 223499752),
-  new GraphPoint("2/10/2023 5:46:05 PM", 123633342)
-];
-
-public ShowNextPoints(){
-  this.ChildGraphComponent.GraphCreatingEvent.emit(this._points2);
+private SplitAllPointToGrups(graphPoints: GraphPoint[], lengthOfGrup: number): GraphPoint[][]
+{
+  let groupsOfPoints: GraphPoint[][] = [];
+  let numberOfGroups = Math.ceil(graphPoints.length/lengthOfGrup);
+  for (let index = 0; index < numberOfGroups; index++) {
+    groupsOfPoints.push(graphPoints.slice(index * lengthOfGrup, (index * lengthOfGrup) + lengthOfGrup));
+  }
+  return groupsOfPoints;
 }
 
-public ShowPreviousPoints(){
-  this.ChildGraphComponent.GraphCreatingEvent.emit(this._points);
+public GetFirstPoints(): GraphPoint[]{
+  return this._grupsOfPoints[0];
+}
+
+public DisplayPreviousPoints(){
+  this._indexOfDisplayedPointsGroup = this._indexOfDisplayedPointsGroup - 1 >= 0 ? this._indexOfDisplayedPointsGroup - 1 : 0;
+  this.ChildGraphComponent.GraphCreatingEvent.emit(this._grupsOfPoints[this._indexOfDisplayedPointsGroup]);
+}
+
+public DisplayNextPoints(){
+  this._indexOfDisplayedPointsGroup = this._indexOfDisplayedPointsGroup + 1 < this._grupsOfPoints.length ? this._indexOfDisplayedPointsGroup + 1 : this._indexOfDisplayedPointsGroup;
+  this.ChildGraphComponent.GraphCreatingEvent.emit(this._grupsOfPoints[this._indexOfDisplayedPointsGroup]);
 }
 
 }
