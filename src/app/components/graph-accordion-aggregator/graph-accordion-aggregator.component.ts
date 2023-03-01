@@ -33,6 +33,9 @@ export class GraphAccordionAggregatorComponent {
         this._archiveRecords = fileRecordsArray;
 
         this._uniqueTagsPoints = this.GetUniqueTagsAndTheirPoints(this._archiveRecords);
+        // Sort list by tag name
+        this.SortListOfTagsPoints(this._uniqueTagsPoints);
+
         this._uniqueTagsPoints.forEach(tagPoints => {
           this._graphAccordionRefs.push(this.InitChildGraphAccordion(tagPoints));
         });
@@ -66,6 +69,15 @@ export class GraphAccordionAggregatorComponent {
     componentInstance.GraphPoints = points;
     componentRef.changeDetectorRef.detectChanges();
     return componentRef;
+  }
+
+  private SortListOfTagsPoints(listOfTagsPoints: TagPoints[]){
+    // Move the HMI device shutdown data to the end of the list.
+    if(listOfTagsPoints !== null && listOfTagsPoints.length > 0){
+      let hmiDeviceShutdownData = listOfTagsPoints.pop();
+      listOfTagsPoints.sort((a, b) => a.Name.localeCompare(b.Name));
+      listOfTagsPoints.push(hmiDeviceShutdownData!);
+    }
   }
 
 }
