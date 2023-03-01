@@ -10,7 +10,7 @@ import { TagPoints } from '../../models/graph/tag-points';
 })
 export class GraphAccordionAggregatorComponent {
 
-@ViewChild('accordionsContainer', { read: ViewContainerRef }) private readonly accordionsContainer: ViewContainerRef;
+  @ViewChild('accordionsContainer', { read: ViewContainerRef }) private readonly accordionsContainer: ViewContainerRef;
 
   private _file: File;
   private _fileReader: FileReader;
@@ -18,23 +18,23 @@ export class GraphAccordionAggregatorComponent {
   private _uniqueTagsPoints: TagPoints[];
   private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
 
-  public getFile(event: any){
+  public GetFileOnLoad(event: any){
     this._file = event.target.files[0];
-    this._fileReader = new FileReader();
     if(this._file.name.endsWith(".csv")){
+      this._fileReader = new FileReader();
       this._fileReader.readAsText(this._file);
       this._fileReader.onload = () => {
         var fileData = this._fileReader.result;
         let fileRecordsArray = (<string>fileData).split(/\r\n|\n/);
-        // Removing the table header from array.
+        // Removing the archive table header from array.
         fileRecordsArray.shift();
-        // Removing the service data from array.
+        // Removing the archive service data from array.
         fileRecordsArray.pop();
         this._archiveRecords = fileRecordsArray;
 
-        this._uniqueTagsPoints = this.GetUniqueTagsAndPoints(this._archiveRecords);
+        this._uniqueTagsPoints = this.GetUniqueTagsAndTheirPoints(this._archiveRecords);
         this._uniqueTagsPoints.forEach(tagPoints => {
-          this._graphAccordionRefs.push(this.GenerateGraphAccordion(tagPoints));
+          this._graphAccordionRefs.push(this.InitChildGraphAccordion(tagPoints));
         });
       };
     }
@@ -43,7 +43,7 @@ export class GraphAccordionAggregatorComponent {
     }
   }
 
-  private GetUniqueTagsAndPoints(archiveRecords: string[]): TagPoints[]{
+  private GetUniqueTagsAndTheirPoints(archiveRecords: string[]): TagPoints[]{
     var tagValuesPaires: TagPoints[] = [];
     archiveRecords.forEach((record)=>{
       var recordValues = record.split(",");
@@ -60,7 +60,7 @@ export class GraphAccordionAggregatorComponent {
     return tagValuesPaires;
   }
 
-  private GenerateGraphAccordion(points: TagPoints): ComponentRef<GraphAccordionComponent>{
+  private InitChildGraphAccordion(points: TagPoints): ComponentRef<GraphAccordionComponent>{
     var componentRef = this.accordionsContainer.createComponent(GraphAccordionComponent);
     var componentInstance = componentRef.instance;
     componentInstance.GraphPoints = points;
