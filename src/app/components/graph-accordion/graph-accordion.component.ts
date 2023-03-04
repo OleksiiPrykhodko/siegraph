@@ -3,7 +3,6 @@ import { GraphComponent } from '../graph/graph.component';
 import { GraphPoint } from '../../models/graph/graph-point';
 import { TagPoints } from 'src/app/models/graph/tag-points';
 
-
 @Component({
   selector: 'app-graph-accordion',
   templateUrl: './graph-accordion.component.html',
@@ -15,7 +14,6 @@ export class GraphAccordionComponent {
 ngOnInit(){
   this._tagName = this.GraphPoints.Name;
   this._allPoints = this.GraphPoints.Points;
-  //this._grupsOfPoints = this.SplitAllPointToGrups(this._allPoints, this._numberOfPointsDisplayedOnGraph);
 }
 
 @Input() public GraphPoints: TagPoints;
