@@ -49,11 +49,14 @@ export class GraphAccordionAggregatorComponent {
   private GetUniqueTagsAndTheirPoints(archiveRecords: string[]): TagPoints[]{
     var tagValuesPaires: TagPoints[] = [];
     archiveRecords.forEach((record)=>{
-      var recordValues = record.split(",");
-      var graphPoint = new GraphPoint(recordValues[1].replace(/["]/g, ""),recordValues[2]);
-      var oneOfTagPairs = tagValuesPaires.find((pair)=> pair.Name === recordValues[0].replace(/["\s$]/g, ""));
+      var recordFields = record.split(",");
+      var nameValue = recordFields[0].replace(/["\s$]/g, "");
+      var xValue = recordFields[1].replace(/["]/g, "");
+      var yValue = recordFields[2];
+      var graphPoint = new GraphPoint(xValue, yValue);
+      var oneOfTagPairs = tagValuesPaires.find((pair)=> pair.Name === nameValue);
       if(oneOfTagPairs === undefined){
-        tagValuesPaires.push(new TagPoints(recordValues[0].replace(/["\s$]/g, ""), [graphPoint]))
+        tagValuesPaires.push(new TagPoints(nameValue, [graphPoint]))
       }
       else{
         oneOfTagPairs?.Points.push(graphPoint);
