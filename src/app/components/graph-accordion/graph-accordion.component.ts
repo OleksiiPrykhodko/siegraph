@@ -15,7 +15,7 @@ export class GraphAccordionComponent {
 ngOnInit(){
   this._tagName = this.GraphPoints.Name;
   this._allPoints = this.GraphPoints.Points;
-  this._grupsOfPoints = this.SplitAllPointToGrups(this._allPoints, this._numberOfPointsDisplayedOnGraph);
+  //this._grupsOfPoints = this.SplitAllPointToGrups(this._allPoints, this._numberOfPointsDisplayedOnGraph);
 }
 
 @Input() public GraphPoints: TagPoints;
@@ -24,35 +24,35 @@ ngOnInit(){
 
 public _tagName: string = "TagName";
 private _allPoints: GraphPoint[] = [];
-private _grupsOfPoints: GraphPoint[][];
-private _numberOfPointsDisplayedOnGraph: number = 200;
-private _indexOfDisplayedPointsGroup: number = 0;
+private readonly _maxNumberOfShowedPoints: number = 200;
+private _indexOfFirstPointNowShowed: number = 0;
 
-private SplitAllPointToGrups(graphPoints: GraphPoint[], lengthOfGrup: number): GraphPoint[][]
-{
-  let groupsOfPoints: GraphPoint[][] = [];
-  let numberOfGroups = Math.ceil(graphPoints.length/lengthOfGrup);
-  for (let index = 0; index < numberOfGroups; index++) {
-    groupsOfPoints.push(graphPoints.slice(index * lengthOfGrup, (index * lengthOfGrup) + lengthOfGrup));
+private GetNumberOfPoints(points: GraphPoint[], startIndex: number, numberOfPoints: number) : GraphPoint[]{
+  return points.slice(startIndex, startIndex + numberOfPoints);
+}
+
+public GetFirstInitPoints(): GraphPoint[]{
+  return this.GetNumberOfPoints(this._allPoints, 0, this._maxNumberOfShowedPoints);
+}
+
+public ShowPreviousPoints(){
+  if(this._indexOfFirstPointNowShowed > 0){
+    if(this._indexOfFirstPointNowShowed - this._maxNumberOfShowedPoints < 0){
+      this._indexOfFirstPointNowShowed = 0;
+    }
+    else{
+      this._indexOfFirstPointNowShowed -= this._maxNumberOfShowedPoints;
+    }
+    var pointsForShowing = this.GetNumberOfPoints(this._allPoints, this._indexOfFirstPointNowShowed, this._maxNumberOfShowedPoints);
+    this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
   }
-  return groupsOfPoints;
 }
 
-public GetFirstPoints(): GraphPoint[]{
-  return this._grupsOfPoints[0];
-}
-
-public DisplayPreviousPoints(){
-  if(this._indexOfDisplayedPointsGroup - 1 >= 0){
-    --this._indexOfDisplayedPointsGroup;
-    this.ChildGraphComponent.GraphCreatingEvent.emit(this._grupsOfPoints[this._indexOfDisplayedPointsGroup]);
-  }
-}
-
-public DisplayNextPoints(){
-  if(this._indexOfDisplayedPointsGroup + 1 < this._grupsOfPoints.length){
-    ++this._indexOfDisplayedPointsGroup;
-    this.ChildGraphComponent.GraphCreatingEvent.emit(this._grupsOfPoints[this._indexOfDisplayedPointsGroup]);
+public ShowNextPoints(){
+  if((this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints) < this._allPoints.length){
+    this._indexOfFirstPointNowShowed += this._maxNumberOfShowedPoints;
+    var pointsForShowing = this.GetNumberOfPoints(this._allPoints, this._indexOfFirstPointNowShowed, this._maxNumberOfShowedPoints);
+    this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
   }
 }
 

@@ -6,9 +6,9 @@
   </h2>
   <div [id]="'panelsStayOpen-collapse-'+_tagName" class="accordion-collapse collapse" [attr.aria-labelledby]="'panelsStayOpen-heading-'+_tagName">
     <div class="accordion-body">
-      <button (click)="DisplayPreviousPoints()" type="button" class="btn btn-success">Previous</button>
-      <button (click)="DisplayNextPoints()" type="button" class="btn btn-success">Next</button>
-      <app-graph [GraphUniqueName] = "_tagName" [GraphPoints]="GetFirstPoints()"></app-graph>
+      <button (click)="ShowPreviousPoints()" type="button" class="btn btn-success">Previous</button>
+      <button (click)="ShowNextPoints()" type="button" class="btn btn-success">Next</button>
+      <app-graph [GraphUniqueName] = "_tagName" [GraphPoints]="GetFirstInitPoints()"></app-graph>
     </div>
   </div>
 </div>
