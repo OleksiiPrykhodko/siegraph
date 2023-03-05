@@ -20,10 +20,31 @@ ngOnInit(){
 
 @ViewChild(GraphComponent) private ChildGraphComponent: GraphComponent;
 
-public _tagName: string = "TagName";
+private _tagName: string = "TagName";
 private _allPoints: GraphPoint[] = [];
-private readonly _maxNumberOfShowedPoints: number = 200;
+private _minDate: Date;
+private _maxDate: Date;
 private _indexOfFirstPointNowShowed: number = 0;
+private readonly _maxNumberOfShowedPoints: number = 10;
+
+public GetTagName(){
+  return this._tagName;
+}
+public GetMinDate(){
+  return this._minDate;
+}
+public GetMaxDate(){
+  return this._maxDate;
+}
+public GetFirstPointIndex(){
+  return this._indexOfFirstPointNowShowed;
+}
+public CheckPreviousButtonActivity(){
+  return this._indexOfFirstPointNowShowed > 0;
+}
+public CheckNextButtonActivity(){
+  return (this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints) < this._allPoints.length;
+}
 
 private GetNumberOfPoints(points: GraphPoint[], startIndex: number, numberOfPoints: number) : GraphPoint[]{
   return points.slice(startIndex, startIndex + numberOfPoints);
@@ -52,6 +73,16 @@ public ShowNextPoints(){
     var pointsForShowing = this.GetNumberOfPoints(this._allPoints, this._indexOfFirstPointNowShowed, this._maxNumberOfShowedPoints);
     this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
   }
+}
+
+public DateFilter = (d: Date | null): boolean => {
+  const day = (d || new Date()).getDay();
+  // Prevent Saturday and Sunday from being selected.
+  return day !== 0 && day !== 6;
+};
+
+public SetDate($event: any){
+  console.log($event.target.value);
 }
 
 }
