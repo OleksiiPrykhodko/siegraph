@@ -13,7 +13,7 @@
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-
+      <button (click)="ShowSelectedDatePoints()" type="button" class="btn btn-success" [ngClass]="{'disabled': !CheckShowDateButtonActivity()}">Show</button>
       <button (click)="ShowPreviousPoints()" type="button" class="btn btn-success" [ngClass]="{'disabled': !CheckPreviousButtonActivity()}">Previous</button>
       <button (click)="ShowNextPoints()" type="button" class="btn btn-success" [ngClass]="{'disabled': !CheckNextButtonActivity()}">Next</button>
       <app-graph [GraphUniqueName] = "GetTagName()" [GraphPoints]="GetFirstInitPoints()"></app-graph>

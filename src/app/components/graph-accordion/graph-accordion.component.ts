@@ -14,6 +14,12 @@ export class GraphAccordionComponent {
 ngOnInit(){
   this._tagName = this.GraphPoints.Name;
   this._allPoints = this.GraphPoints.Points;
+  this.GraphPoints.Points.forEach((point) => {
+    var pointDate = new Date(point.X);
+    if(pointDate instanceof Date){
+      this._timeStampsOfAllPoints.push(pointDate);
+    }
+  });
 }
 
 @Input() public GraphPoints: TagPoints;
@@ -22,10 +28,12 @@ ngOnInit(){
 
 private _tagName: string = "TagName";
 private _allPoints: GraphPoint[] = [];
+private _timeStampsOfAllPoints: Date[] = [];
 private _minDate: Date;
 private _maxDate: Date;
 private _indexOfFirstPointNowShowed: number = 0;
-private readonly _maxNumberOfShowedPoints: number = 10;
+private readonly _maxNumberOfShowedPoints: number = 200;
+private _selectedDate: Date;
 
 public GetTagName(){
   return this._tagName;
@@ -38,6 +46,9 @@ public GetMaxDate(){
 }
 public GetFirstPointIndex(){
   return this._indexOfFirstPointNowShowed;
+}
+public CheckShowDateButtonActivity(){
+  return this._selectedDate instanceof Date ? true : false;
 }
 public CheckPreviousButtonActivity(){
   return this._indexOfFirstPointNowShowed > 0;
@@ -75,14 +86,32 @@ public ShowNextPoints(){
   }
 }
 
-public DateFilter = (d: Date | null): boolean => {
-  const day = (d || new Date()).getDay();
-  // Prevent Saturday and Sunday from being selected.
-  return day !== 0 && day !== 6;
+public ShowSelectedDatePoints(){
+  if(this._timeStampsOfAllPoints.length > 0 && this._selectedDate instanceof Date){
+    var indexOfFirstPointForSelectedDay = this._timeStampsOfAllPoints.findIndex((date) =>
+    date.getFullYear() == this._selectedDate.getFullYear() && date.getMonth() == this._selectedDate.getMonth() && date.getDate() == this._selectedDate.getDate());
+
+    this._indexOfFirstPointNowShowed = indexOfFirstPointForSelectedDay;
+    var pointsForShowing = this.GetNumberOfPoints(this._allPoints, indexOfFirstPointForSelectedDay, this._maxNumberOfShowedPoints);
+    this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+  }
+}
+
+public DateFilter = (date: Date | null): boolean => {
+
+  const day = (date || new Date()).getDate();
+  const month = (date || new Date()).getMonth();
+  const year = (date || new Date()).getFullYear();
+  var result = this._timeStampsOfAllPoints.some((date) =>
+  date.getFullYear() == year && date.getMonth() == month && date.getDate() == day);
+
+  return result;
 };
 
-public SetDate($event: any){
-  console.log($event.target.value);
+public SetDate(event: any){
+  if(event.target.value instanceof Date){
+    this._selectedDate = event.target.value;
+  }
 }
 
 }
