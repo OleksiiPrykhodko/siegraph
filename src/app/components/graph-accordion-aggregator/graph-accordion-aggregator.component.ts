@@ -19,6 +19,10 @@ export class GraphAccordionAggregatorComponent {
   private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
 
   public GetFileOnLoad(event: any){
+    // Destroy all accordions if they exist.
+    this.DestroyComponents(this._graphAccordionRefs);
+    this._graphAccordionRefs = []
+
     this._file = event.target.files[0];
     if(this._file.name.endsWith(".csv")){
       this._fileReader = new FileReader();
@@ -81,6 +85,14 @@ export class GraphAccordionAggregatorComponent {
       listOfTagsPoints.sort((a, b) => a.Name.localeCompare(b.Name));
       listOfTagsPoints.push(hmiDeviceShutdownData!);
     }
+  }
+
+  private DestroyComponents<C>(components: ComponentRef<C>[]): boolean{
+    if(components != undefined && components != null && components.length > 0){
+      components.forEach((component) => component.destroy());
+      return true;
+    }
+    return false;
   }
 
 }
