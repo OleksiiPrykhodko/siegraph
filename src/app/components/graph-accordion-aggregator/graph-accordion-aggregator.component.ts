@@ -1,52 +1,63 @@
-import { Component, ComponentRef, ViewChild, ViewContainerRef} from '@angular/core';
+import { Component, ComponentRef, ViewChild, ViewContainerRef, Output, EventEmitter, OnInit} from '@angular/core';
 import { GraphAccordionComponent } from '../graph-accordion/graph-accordion.component';
 import { GraphPoint } from '../../models/graph/graph-point';
 import { TagPoints } from '../../models/graph/tag-points';
+import { FileLoadService } from 'src/app/services/file-load.service';
 
 @Component({
   selector: 'app-graph-accordion-aggregator',
   templateUrl: './graph-accordion-aggregator.component.html',
   styleUrls: ['./graph-accordion-aggregator.component.scss']
 })
+
 export class GraphAccordionAggregatorComponent {
 
   @ViewChild('accordionsContainer', { read: ViewContainerRef }) private readonly accordionsContainer: ViewContainerRef;
+
+  constructor(private _fileLoadService: FileLoadService) {
+    this._fileLoadedEventEmitter = _fileLoadService.FileLoadedEventEmitter;
+  }
+
+  ngOnInit(){
+    this._fileLoadedEventEmitter.subscribe((file)=>this.SetFileOnLoad(file));
+  }
+
+  ngOnDestroy(){
+    this._fileLoadedEventEmitter.unsubscribe();
+   }
 
   private _file: File;
   private _fileReader: FileReader;
   private _archiveRecords: string[];
   private _uniqueTagsPoints: TagPoints[];
   private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
+  private _fileLoadedEventEmitter: EventEmitter<File>;
 
-  public GetFileOnLoad(event: any){
-    if(event.target.files.length > 0){
+  public SetFileOnLoad(file: File){
+    if(file != null && file != undefined){
+      this._file = file;
+
       // Destroy all accordions if they exist.
       this.DestroyComponents(this._graphAccordionRefs);
       this._graphAccordionRefs = [];
 
-      this._file = event.target.files[0];
-      if(this._file.name.endsWith(".csv")){
-        this._fileReader = new FileReader();
-        this._fileReader.readAsText(this._file);
-        this._fileReader.onload = () => {
-          var fileData = this._fileReader.result;
-          let fileRecordsArray = (<string>fileData).split(/\r\n|\n/);
-          // Removing the archive table header from array.
-          fileRecordsArray.shift();
-          // Removing the archive service data from array.
-          fileRecordsArray.pop();
-          this._archiveRecords = fileRecordsArray;
-          this._uniqueTagsPoints = this.GetUniqueTagsAndTheirPoints(this._archiveRecords);
-          // Sort list by tag name
-          this.SortListOfTagsPoints(this._uniqueTagsPoints);
-          this._uniqueTagsPoints.forEach(tagPoints => {
-            this._graphAccordionRefs.push(this.InitChildGraphAccordion(tagPoints));
-          });
-        };
-      }
-      else{
-        console.log("Do not try to send file with wrong type. CSV only!");
-      }
+      this._fileReader = new FileReader();
+      this._fileReader.readAsText(this._file);
+      this._fileReader.onload = () => {
+        var fileData = this._fileReader.result;
+        let fileRecordsArray = (<string>fileData).split(/\r\n|\n/);
+        // Removing the archive table header from array.
+        fileRecordsArray.shift();
+        // Removing the archive service data from array.
+        fileRecordsArray.pop();
+        this._archiveRecords = fileRecordsArray;
+        this._uniqueTagsPoints = this.GetUniqueTagsAndTheirPoints(this._archiveRecords);
+        // Sort list by tag name
+        this.SortListOfTagsPoints(this._uniqueTagsPoints);
+        this._uniqueTagsPoints.forEach(tagPoints => {
+          this._graphAccordionRefs.push(this.InitChildGraphAccordion(tagPoints));
+        });
+      };
     }
   }
 
