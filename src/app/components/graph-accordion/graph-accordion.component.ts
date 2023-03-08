@@ -86,17 +86,6 @@ public ShowNextPoints(){
   }
 }
 
-public ShowSelectedDatePoints(){
-  if(this._timeStampsOfAllPoints.length > 0 && this._selectedDate instanceof Date){
-    var indexOfFirstPointForSelectedDay = this._timeStampsOfAllPoints.findIndex((date) =>
-    date.getFullYear() == this._selectedDate.getFullYear() && date.getMonth() == this._selectedDate.getMonth() && date.getDate() == this._selectedDate.getDate());
-
-    this._indexOfFirstPointNowShowed = indexOfFirstPointForSelectedDay;
-    var pointsForShowing = this.GetNumberOfPoints(this._allPoints, indexOfFirstPointForSelectedDay, this._maxNumberOfShowedPoints);
-    this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
-  }
-}
-
 public DateFilter = (date: Date | null): boolean => {
 
   const day = (date || new Date()).getDate();
@@ -111,6 +100,19 @@ public DateFilter = (date: Date | null): boolean => {
 public SetDate(event: any){
   if(event.target.value instanceof Date){
     this._selectedDate = event.target.value;
+    this.ShowSelectedDatePoints();
+  }
+}
+
+public ShowSelectedDatePoints(){
+  if(this._selectedDate instanceof Date && this._timeStampsOfAllPoints.length > 0){
+    var indexOfFirstPointForSelectedDay = this._timeStampsOfAllPoints.findIndex((date) =>
+    date.getFullYear() == this._selectedDate.getFullYear() && date.getMonth() == this._selectedDate.getMonth() && date.getDate() == this._selectedDate.getDate());
+    if(indexOfFirstPointForSelectedDay >= 0){
+      this._indexOfFirstPointNowShowed = indexOfFirstPointForSelectedDay;
+      var pointsForShowing = this.GetNumberOfPoints(this._allPoints, indexOfFirstPointForSelectedDay, this._maxNumberOfShowedPoints);
+      this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+    }
   }
 }
 
