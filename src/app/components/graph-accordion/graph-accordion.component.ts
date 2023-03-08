@@ -47,6 +47,12 @@ public GetMaxDate(){
 public GetFirstPointIndex(){
   return this._indexOfFirstPointNowShowed;
 }
+public GetAllPointsNumber(){
+  return this._allPoints.length;
+}
+public GetLastShowedsPointNumber(){
+  return this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints > this._allPoints.length ? this._allPoints.length : this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints;
+}
 public CheckShowDateButtonActivity(){
   return this._selectedDate instanceof Date ? true : false;
 }

@@ -5,19 +5,31 @@
     </button>
   </h2>
   <div [id]="'panelsStayOpen-collapse-'+GetTagName()" class="accordion-collapse collapse" [attr.aria-labelledby]="'panelsStayOpen-heading-'+GetTagName()">
-    <div class="accordion-body">
-      <mat-form-field class="example-full-width" subscriptSizing="dynamic" > <!--appearance="outline"-->
-        <mat-label>Choose a date</mat-label>
-        <input matInput (click)="picker.open()" [min]="GetMinDate()" [max]="GetMaxDate()" [matDatepickerFilter]="DateFilter" [matDatepicker]="picker" (dateChange)="SetDate($event)" >
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <button mat-fab (click)="ShowPreviousPoints()" [disabled]="!CheckPreviousButtonActivity()" color="warn" aria-label="Example icon button with a home icon">
-        <mat-icon>arrow_back_ios_new</mat-icon>
-      </button>
-      <button mat-fab (click)="ShowNextPoints()" [disabled]="!CheckNextButtonActivity()" color="warn" aria-label="Example icon button with a home icon">
-        <mat-icon>arrow_forward_ios_new</mat-icon>
-      </button>
+    <div class="accordion-body border border-info">
+      <div class="row justify-content-between">
+        <div class="col-auto">
+          <mat-form-field class="example-full-width" subscriptSizing="dynamic" > <!--appearance="outline"-->
+            <mat-label>Choose a date</mat-label>
+            <input matInput (click)="picker.open()" [min]="GetMinDate()" [max]="GetMaxDate()" [matDatepickerFilter]="DateFilter" [matDatepicker]="picker" (dateChange)="SetDate($event)" >
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-auto">
+          <p>{{GetFirstPointIndex() + 1}} - {{GetLastShowedsPointNumber()}} / {{GetAllPointsNumber()}}</p>
+        </div>
+        <div class="col-auto">
+          <button mat-fab (click)="ShowPreviousPoints()" [disabled]="!CheckPreviousButtonActivity()" color="warn" aria-label="Example icon button with a home icon">
+            <mat-icon>arrow_back_ios_new</mat-icon>
+          </button>
+          <button mat-fab (click)="ShowNextPoints()" [disabled]="!CheckNextButtonActivity()" color="warn" aria-label="Example icon button with a home icon">
+            <mat-icon>arrow_forward_ios_new</mat-icon>
+          </button>
+        </div>
+      </div>
+
+
+
         <!--
       <button (click)="ShowPreviousPoints()" type="button" class="btn btn-success btn-lg" [ngClass]="{'disabled': !CheckPreviousButtonActivity()}">Previous</button>
       <button (click)="ShowNextPoints()" type="button" class="btn btn-success btn-lg" [ngClass]="{'disabled': !CheckNextButtonActivity()}">Next</button>
