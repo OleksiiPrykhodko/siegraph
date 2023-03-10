@@ -96,7 +96,8 @@ export class GraphComponent {
     },
     scales: {
       //x: {
-      //  ticks: {display : true,
+      //  ticks: {
+      //    display : true,
       //    align: 'start'
       //  }
       //},
@@ -144,6 +145,8 @@ export class GraphComponent {
       data: currentChartDataSet,
       options: this._mainChartOptions
     });
+    //this._currentChart!.options!.scales!['x']!.ticks!.align = 'center';
+    //this._currentChart!.update();
 
     var box = document.querySelector<HTMLElement>("."+this.GetNameForBox());
     var barLength = this._currentChart.data.labels!.length;
