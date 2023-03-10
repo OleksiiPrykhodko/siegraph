@@ -12,7 +12,14 @@ import { FileLoadService } from 'src/app/services/file-load.service';
 
 export class GraphAccordionAggregatorComponent {
 
-  @ViewChild('accordionsContainer', { read: ViewContainerRef }) private readonly accordionsContainer: ViewContainerRef;
+  @ViewChild('accordionsContainer', { read: ViewContainerRef }) private readonly _accordionsContainer: ViewContainerRef;
+
+  private _file: File;
+  private _fileReader: FileReader;
+  private _archiveRecords: string[];
+  private _uniqueTagsPoints: TagPoints[];
+  private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
+  private _fileLoadedEventEmitter: EventEmitter<File>;
 
   constructor(private _fileLoadService: FileLoadService) {
     this._fileLoadedEventEmitter = _fileLoadService.FileLoadedEventEmitter;
@@ -25,13 +32,6 @@ export class GraphAccordionAggregatorComponent {
   ngOnDestroy(){
     this._fileLoadedEventEmitter.unsubscribe();
    }
-
-  private _file: File;
-  private _fileReader: FileReader;
-  private _archiveRecords: string[];
-  private _uniqueTagsPoints: TagPoints[];
-  private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
-  private _fileLoadedEventEmitter: EventEmitter<File>;
 
   public SetFileOnLoad(file: File){
     if(file != null && file != undefined){
@@ -52,7 +52,7 @@ export class GraphAccordionAggregatorComponent {
         fileRecordsArray.pop();
         this._archiveRecords = fileRecordsArray;
         this._uniqueTagsPoints = this.GetUniqueTagsAndTheirPoints(this._archiveRecords);
-        // Sort list by tag name
+        // Sort list by tag name.
         this.SortListOfTagsPoints(this._uniqueTagsPoints);
         this._uniqueTagsPoints.forEach(tagPoints => {
           this._graphAccordionRefs.push(this.InitChildGraphAccordion(tagPoints));
@@ -82,7 +82,7 @@ export class GraphAccordionAggregatorComponent {
   }
 
   private InitChildGraphAccordion(points: TagPoints): ComponentRef<GraphAccordionComponent>{
-    var componentRef = this.accordionsContainer.createComponent(GraphAccordionComponent);
+    var componentRef = this._accordionsContainer.createComponent(GraphAccordionComponent);
     var componentInstance = componentRef.instance;
     componentInstance.GraphPoints = points;
     componentRef.changeDetectorRef.detectChanges();
