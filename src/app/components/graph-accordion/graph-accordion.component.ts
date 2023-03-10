@@ -11,17 +11,6 @@ import { TagPoints } from 'src/app/models/graph/tag-points';
 
 export class GraphAccordionComponent {
 
-ngOnInit(){
-  this._tagName = this.GraphPoints.Name;
-  this._allPoints = this.GraphPoints.Points;
-  this.GraphPoints.Points.forEach((point) => {
-    var pointDate = new Date(point.X);
-    if(pointDate instanceof Date){
-      this._timeStampsOfAllPoints.push(pointDate);
-    }
-  });
-}
-
 @Input() public GraphPoints: TagPoints;
 
 @ViewChild(GraphComponent) private ChildGraphComponent: GraphComponent;
@@ -32,8 +21,19 @@ private _timeStampsOfAllPoints: Date[] = [];
 private _minDate: Date;
 private _maxDate: Date;
 private _indexOfFirstPointNowShowed: number = 0;
-private readonly _maxNumberOfShowedPoints: number = 200;
+private readonly _maxNumberOfShowedPoints: number = 20;
 private _selectedDate: Date;
+
+ngOnInit(){
+  this._tagName = this.GraphPoints.Name;
+  this._allPoints = this.GraphPoints.Points;
+  this.GraphPoints.Points.forEach((point) => {
+    var pointDate = new Date(point.X);
+    if(pointDate instanceof Date){
+      this._timeStampsOfAllPoints.push(pointDate);
+    }
+  });
+}
 
 public GetTagName(){
   return this._tagName;
@@ -62,11 +62,9 @@ public CheckPreviousButtonActivity(){
 public CheckNextButtonActivity(){
   return (this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints) < this._allPoints.length;
 }
-
 private GetNumberOfPoints(points: GraphPoint[], startIndex: number, numberOfPoints: number) : GraphPoint[]{
   return points.slice(startIndex, startIndex + numberOfPoints);
 }
-
 public GetFirstInitPoints(): GraphPoint[]{
   return this.GetNumberOfPoints(this._allPoints, 0, this._maxNumberOfShowedPoints);
 }
@@ -104,7 +102,7 @@ public DateFilter = (date: Date | null): boolean => {
 };
 
 public SetDate(event: any){
-  if(event.target.value instanceof Date){
+  if(event !== null && event.target.value instanceof Date){
     this._selectedDate = event.target.value;
     this.ShowSelectedDatePoints();
   }
