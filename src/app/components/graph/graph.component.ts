@@ -28,8 +28,16 @@ export class GraphComponent {
   @Input() public GraphUniqueName: string;
   @Output() public GraphCreatingEvent = new EventEmitter<GraphPoint[]>();
 
-  constructor() {
-  }
+  private _yAxisId: string = "graphYAxis";
+  private _yAxisChart: Chart;
+  private _currentChart: Chart;
+
+  private _lineWidthOnGraph: number = 3;
+  // The number of points after which the distance between points becomes fixed.
+  private _borderNumberOfPointsForFixedGraphWidth: number = 8;
+  // The distance in pixels between two points on the x-axis in.
+  private _distanceBetweenPoints: number = 140;
+
 
   ngOnInit(){
     this.GraphCreatingEvent.subscribe((points: GraphPoint[]) =>
@@ -49,16 +57,6 @@ export class GraphComponent {
     this._currentChart.destroy();
     this.GraphCreatingEvent.unsubscribe();
   }
-
-  private _yAxisId: string = "graphYAxis";
-  private _yAxisChart: Chart;
-  private _currentChart: Chart;
-
-  private _lineWidthOnGraph: number = 3;
-  // The number of points after which the distance between points becomes fixed.
-  private _borderNumberOfPointsForFixedGraphWidth: number = 8;
-  // The distance in pixels between two points on the x-axis in.
-  private _distanceBetweenPoints: number = 140;
 
   public YAxisId(): string{
     return `${this._yAxisId}-${this.GraphUniqueName}`;
@@ -88,7 +86,7 @@ export class GraphComponent {
     }
   };
 
-  private _chartOptions = {
+  private _mainChartOptions = {
     maintainAspectRatio: false,
     layout:{
       padding: { top : 10, bottom: 10}
@@ -112,7 +110,7 @@ export class GraphComponent {
     }
   };
 
-  ShowGraph(graphPoints: GraphPoint[]){
+  private ShowGraph(graphPoints: GraphPoint[]){
     var yAxisDataSet ={
       // min and max values
       labels: ['0','1'],
@@ -144,7 +142,7 @@ export class GraphComponent {
     this._currentChart = new Chart(this.GraphUniqueName, {
       type: 'line',
       data: currentChartDataSet,
-      options: this._chartOptions
+      options: this._mainChartOptions
     });
 
     var box = document.querySelector<HTMLElement>("."+this.GetNameForBox());
