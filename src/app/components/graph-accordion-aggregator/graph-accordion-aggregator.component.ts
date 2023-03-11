@@ -19,18 +19,16 @@ export class GraphAccordionAggregatorComponent {
   private _archiveRecords: string[];
   private _uniqueTagsPoints: TagPoints[];
   private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
-  private _fileLoadedEventEmitter: EventEmitter<File>;
 
   constructor(private _fileLoadService: FileLoadService) {
-    this._fileLoadedEventEmitter = _fileLoadService.FileLoadedEventEmitter;
   }
 
   ngOnInit(){
-    this._fileLoadedEventEmitter.subscribe((file)=>this.SetFileOnLoad(file));
+    this._fileLoadService.Subscribe((file)=>this.SetFileOnLoad(file));
   }
 
   ngOnDestroy(){
-    this._fileLoadedEventEmitter.unsubscribe();
+    this._fileLoadService.Unsubscribe();
    }
 
   public SetFileOnLoad(file: File){

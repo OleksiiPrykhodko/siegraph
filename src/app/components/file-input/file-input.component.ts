@@ -9,13 +9,11 @@ import { FileLoadService } from '../../services/file-load.service';
 
 export class FileInputComponent {
 
-  private _fileLoadedEvent: EventEmitter<File>;
   public readonly _fakeFileInputID = "fakeFileInput";
   public readonly _fileExtension = ".csv";
   private _file: File;
 
   constructor(private _fileLoadService: FileLoadService) {
-    this._fileLoadedEvent = _fileLoadService.FileLoadedEventEmitter;
   }
 
   private SetFileNameToInputField(inputId: string, value: string){
@@ -30,10 +28,10 @@ export class FileInputComponent {
       this._file = event.target.files[0];
 
       if(this._file instanceof File && this._file.name.endsWith(this._fileExtension)){
-        // set file name to hidden input field
+        // Set file name to hidden input field.
         this.SetFileNameToInputField(this._fakeFileInputID, this._file.name);
-        if(this._fileLoadedEvent != null && this._fileLoadedEvent != undefined){
-          this._fileLoadedEvent.emit(this._file);
+        if(this._fileLoadService != null && this._fileLoadService != undefined){
+          this._fileLoadService.Emit(this._file);
         }
       }
       else{
