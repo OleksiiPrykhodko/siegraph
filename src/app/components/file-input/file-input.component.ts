@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FileLoadService } from '../../services/file-load.service';
 
 @Component({
@@ -16,25 +16,25 @@ export class FileInputComponent {
   constructor(private _fileLoadService: FileLoadService) {
   }
 
-  private SetFileNameToInputField(inputId: string, value: string){
+  private setFileNameToInputField(inputId: string, value: string): void {
     var element = document.getElementById(inputId) as HTMLInputElement | null;
-    if(element != null){
+    if (element) {
       element.value = value;
     }
   }
 
-  public GetFileOnLoad(event: any){
-    if(event != null && event != undefined && event.target.files.length > 0){
+  public getFileOnLoad(event: any): void {
+    if (event?.target?.files?.length) {
       this._file = event.target.files[0];
 
-      if(this._file instanceof File && this._file.name.endsWith(this._fileExtension)){
+      if (this._file?.name.endsWith(this._fileExtension)) {
         // Set file name to hidden input field.
-        this.SetFileNameToInputField(this._fakeFileInputID, this._file.name);
-        if(this._fileLoadService != null && this._fileLoadService != undefined){
+        this.setFileNameToInputField(this._fakeFileInputID, this._file.name);
+        if (this._fileLoadService) {
           this._fileLoadService.Emit(this._file);
         }
       }
-      else{
+      else {
         console.log("You try to send file with wrong extension. CSV files only!");
       }
     }
