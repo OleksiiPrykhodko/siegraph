@@ -7,17 +7,17 @@ import { Injectable, EventEmitter } from '@angular/core';
 export class FileLoadService {
   private FileLoadedEventEmitter: EventEmitter<File> = new EventEmitter<File>();
 
-  public Subscribe(next: (value: File) => void): void {
+  public subscribe(next: (value: File) => void): void {
     this.FileLoadedEventEmitter.subscribe(next);
   }
 
-  public Emit(file: File): void {
+  public emit(file: File): void {
     if (file) {
       this.FileLoadedEventEmitter.emit(file);
     }
   }
 
-  public Unsubscribe(): void {
+  public unsubscribe(): void {
     this.FileLoadedEventEmitter.unsubscribe();
   }
 }
