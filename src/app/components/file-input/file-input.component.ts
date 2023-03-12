@@ -31,7 +31,7 @@ export class FileInputComponent {
         // Set file name to hidden input field.
         this.setFileNameToInputField(this._fakeFileInputID, this._file.name);
         if (this._fileLoadService) {
-          this._fileLoadService.Emit(this._file);
+          this._fileLoadService.emit(this._file);
         }
       }
       else {
