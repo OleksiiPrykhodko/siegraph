@@ -105,7 +105,7 @@ export class GraphAccordionAggregatorComponent implements OnInit, OnDestroy {
     var componentRef = this._accordionsContainer.createComponent(
       GraphAccordionComponent
     );
-    componentRef.instance.GraphPoints = points;
+    componentRef.instance._graphPoints = points;
     componentRef.changeDetectorRef.detectChanges();
     return componentRef;
   }

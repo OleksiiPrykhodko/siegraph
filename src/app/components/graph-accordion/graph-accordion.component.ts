@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, OnInit } from '@angular/core';
 import { GraphComponent } from '../graph/graph.component';
 import { GraphPoint } from '../../models/graph/graph-point';
 import { TagPoints } from 'src/app/models/graph/tag-points';
@@ -6,118 +6,143 @@ import { TagPoints } from 'src/app/models/graph/tag-points';
 @Component({
   selector: 'app-graph-accordion',
   templateUrl: './graph-accordion.component.html',
-  styleUrls: ['./graph-accordion.component.scss']
+  styleUrls: ['./graph-accordion.component.scss'],
 })
 
-export class GraphAccordionComponent {
+export class GraphAccordionComponent implements OnInit {
+  @Input() public _graphPoints: TagPoints;
 
-@Input() public GraphPoints: TagPoints;
+  @ViewChild(GraphComponent) private _childGraphComponent: GraphComponent;
 
-@ViewChild(GraphComponent) private ChildGraphComponent: GraphComponent;
+  private _tagName: string = 'TagName';
+  private _allPoints: GraphPoint[] = [];
+  private _timeStampsOfAllPoints: Date[] = [];
+  private _minDate: Date;
+  private _maxDate: Date;
+  private _indexOfFirstPointNowShowed: number = 0;
+  private readonly _maxNumberOfShowedPoints: number = 20;
+  private _selectedDate: Date;
 
-private _tagName: string = "TagName";
-private _allPoints: GraphPoint[] = [];
-private _timeStampsOfAllPoints: Date[] = [];
-private _minDate: Date;
-private _maxDate: Date;
-private _indexOfFirstPointNowShowed: number = 0;
-private readonly _maxNumberOfShowedPoints: number = 20;
-private _selectedDate: Date;
-
-ngOnInit(){
-  this._tagName = this.GraphPoints.Name;
-  this._allPoints = this.GraphPoints.Points;
-  this.GraphPoints.Points.forEach((point) => {
-    var pointDate = new Date(point.X);
-    if(pointDate instanceof Date){
-      this._timeStampsOfAllPoints.push(pointDate);
-    }
-  });
-}
-
-public GetTagName(){
-  return this._tagName;
-}
-public GetMinDate(){
-  return this._minDate;
-}
-public GetMaxDate(){
-  return this._maxDate;
-}
-public GetFirstPointIndex(){
-  return this._indexOfFirstPointNowShowed;
-}
-public GetAllPointsNumber(){
-  return this._allPoints.length;
-}
-public GetLastShowedsPointNumber(){
-  return this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints > this._allPoints.length ? this._allPoints.length : this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints;
-}
-public CheckShowDateButtonActivity(){
-  return this._selectedDate instanceof Date ? true : false;
-}
-public CheckPreviousButtonActivity(){
-  return this._indexOfFirstPointNowShowed > 0;
-}
-public CheckNextButtonActivity(){
-  return (this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints) < this._allPoints.length;
-}
-private GetNumberOfPoints(points: GraphPoint[], startIndex: number, numberOfPoints: number) : GraphPoint[]{
-  return points.slice(startIndex, startIndex + numberOfPoints);
-}
-public GetFirstInitPoints(): GraphPoint[]{
-  return this.GetNumberOfPoints(this._allPoints, 0, this._maxNumberOfShowedPoints);
-}
-
-public ShowPreviousPoints(){
-  if(this._indexOfFirstPointNowShowed > 0){
-    if(this._indexOfFirstPointNowShowed - this._maxNumberOfShowedPoints < 0){
-      this._indexOfFirstPointNowShowed = 0;
-    }
-    else{
-      this._indexOfFirstPointNowShowed -= this._maxNumberOfShowedPoints;
-    }
-    var pointsForShowing = this.GetNumberOfPoints(this._allPoints, this._indexOfFirstPointNowShowed, this._maxNumberOfShowedPoints);
-    this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
-  }
-}
-
-public ShowNextPoints(){
-  if((this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints) < this._allPoints.length){
-    this._indexOfFirstPointNowShowed += this._maxNumberOfShowedPoints;
-    var pointsForShowing = this.GetNumberOfPoints(this._allPoints, this._indexOfFirstPointNowShowed, this._maxNumberOfShowedPoints);
-    this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
-  }
-}
-
-public DateFilter = (date: Date | null): boolean => {
-
-  const day = (date || new Date()).getDate();
-  const month = (date || new Date()).getMonth();
-  const year = (date || new Date()).getFullYear();
-  var result = this._timeStampsOfAllPoints.some((date) =>
-  date.getFullYear() == year && date.getMonth() == month && date.getDate() == day);
-
-  return result;
-};
-
-public SetDate(event: any){
-  if(event !== null && event.target.value instanceof Date){
-    this._selectedDate = event.target.value;
-    this.ShowSelectedDatePoints();
-  }
-}
-
-public ShowSelectedDatePoints(){
-  if(this._selectedDate instanceof Date && this._timeStampsOfAllPoints.length > 0){
-    var indexOfFirstPointForSelectedDay = this._timeStampsOfAllPoints.findIndex((date) =>
-    date.getFullYear() == this._selectedDate.getFullYear() && date.getMonth() == this._selectedDate.getMonth() && date.getDate() == this._selectedDate.getDate());
-    if(indexOfFirstPointForSelectedDay >= 0){
-      this._indexOfFirstPointNowShowed = indexOfFirstPointForSelectedDay;
-      var pointsForShowing = this.GetNumberOfPoints(this._allPoints, indexOfFirstPointForSelectedDay, this._maxNumberOfShowedPoints);
-      this.ChildGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+  ngOnInit(): void {
+    if(this._graphPoints){
+      this._tagName = this._graphPoints.Name;
+      this._allPoints = this._graphPoints.Points;
+      this._graphPoints.Points?.forEach((point) => {
+        var pointDate = new Date(point.X);
+        if (pointDate.toString() !== "Invalid Date") {
+          this._timeStampsOfAllPoints.push(pointDate);
+        }
+      });
     }
   }
-}
 
+  public getTagName(): string {
+    return this._tagName;
+  }
+
+  public getFirstPointIndex(): number {
+    return this._indexOfFirstPointNowShowed;
+  }
+
+  public getAllPointsNumber(): number {
+    return this._allPoints.length;
+  }
+
+  public getLastShowedsPointNumber(): number {
+    return this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints >
+      this._allPoints.length
+      ? this._allPoints.length
+      : this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints;
+  }
+
+  public checkPreviousButtonActivity(): boolean {
+    return this._indexOfFirstPointNowShowed > 0;
+  }
+
+  public checkNextButtonActivity(): boolean {
+    return (
+      this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints < this._allPoints.length
+    );
+  }
+
+  private getNumberOfPoints(points: GraphPoint[], startIndex: number, numberOfPoints: number
+  ): GraphPoint[] {
+    return points.slice(startIndex, startIndex + numberOfPoints);
+  }
+
+  public getFirstInitPoints(): GraphPoint[] {
+    return this.getNumberOfPoints(this._allPoints, 0, this._maxNumberOfShowedPoints);
+  }
+
+  public showPreviousPoints(): void {
+    if (this._indexOfFirstPointNowShowed > 0) {
+      if (this._indexOfFirstPointNowShowed - this._maxNumberOfShowedPoints < 0) {
+        this._indexOfFirstPointNowShowed = 0;
+      } else {
+        this._indexOfFirstPointNowShowed -= this._maxNumberOfShowedPoints;
+      }
+      var pointsForShowing = this.getNumberOfPoints(
+        this._allPoints,
+        this._indexOfFirstPointNowShowed,
+        this._maxNumberOfShowedPoints
+      );
+      this._childGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+    }
+  }
+
+  public showNextPoints(): void {
+    if (
+      this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints < this._allPoints.length
+      ) {
+      this._indexOfFirstPointNowShowed += this._maxNumberOfShowedPoints;
+      var pointsForShowing = this.getNumberOfPoints(
+        this._allPoints,
+        this._indexOfFirstPointNowShowed,
+        this._maxNumberOfShowedPoints
+      );
+      this._childGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+    }
+  }
+
+  public dateFilter = (date: Date | null): boolean => {
+    const day = (date || new Date()).getDate();
+    const month = (date || new Date()).getMonth();
+    const year = (date || new Date()).getFullYear();
+    var result = this._timeStampsOfAllPoints.some(
+      (date) =>
+        date.getFullYear() == year &&
+        date.getMonth() == month &&
+        date.getDate() == day
+    );
+
+    return result;
+  };
+
+  public setDate(event: any): void {
+    if (event?.target?.value) {
+      this._selectedDate = event.target.value;
+      this.showSelectedDatePoints();
+    }
+  }
+
+  public showSelectedDatePoints(): void {
+    if (this._selectedDate && this._timeStampsOfAllPoints.length > 0){
+      var indexOfFirstPointForSelectedDay =
+        this._timeStampsOfAllPoints.findIndex(
+          (date) =>
+            date.getFullYear() == this._selectedDate.getFullYear() &&
+            date.getMonth() == this._selectedDate.getMonth() &&
+            date.getDate() == this._selectedDate.getDate()
+        );
+      if (indexOfFirstPointForSelectedDay >= 0) {
+        this._indexOfFirstPointNowShowed = indexOfFirstPointForSelectedDay;
+        var pointsForShowing = this.getNumberOfPoints(
+          this._allPoints,
+          indexOfFirstPointForSelectedDay,
+          this._maxNumberOfShowedPoints
+        );
+        this._childGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+      }
+    }
+  }
 }
