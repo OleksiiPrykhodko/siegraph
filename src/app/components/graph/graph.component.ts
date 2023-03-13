@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, AfterContentChecked, OnDestroy, Output, EventEmitter} from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import {
   Chart,
   ChartType,
@@ -12,7 +12,7 @@ import {
   Legend,
   registerables,
 } from 'node_modules/chart.js';
-import {GraphPoint} from '../../models/graph/graph-point';
+import { GraphPoint } from '../../models/graph/graph-point';
 
 Chart.register(...registerables);
 
@@ -22,11 +22,11 @@ Chart.register(...registerables);
   styleUrls: ['./graph.component.scss'],
 })
 
-export class GraphComponent {
+export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
 
-  @Input() public GraphPoints: GraphPoint[];
-  @Input() public GraphUniqueName: string;
-  @Output() public GraphCreatingEvent = new EventEmitter<GraphPoint[]>();
+  @Input() public _graphPoints: GraphPoint[];
+  @Input() public _graphUniqueName: string;
+  @Output() public _graphCreatingEvent = new EventEmitter<GraphPoint[]>();
 
   private _yAxisId: string = "graphYAxis";
   private _yAxisChart: Chart;
@@ -40,30 +40,30 @@ export class GraphComponent {
 
 
   ngOnInit(){
-    this.GraphCreatingEvent.subscribe((points: GraphPoint[]) =>
+    this._graphCreatingEvent.subscribe((points: GraphPoint[]) =>
     {
       this._yAxisChart.destroy();
       this._currentChart.destroy();
-      this.ShowGraph(points);
-    })
+      this.showGraph(points);
+    });
   }
 
   ngAfterViewInit(){
-    this.ShowGraph(this.GraphPoints);
+    this.showGraph(this._graphPoints);
   }
 
   ngOnDestroy(){
     this._yAxisChart.destroy();
     this._currentChart.destroy();
-    this.GraphCreatingEvent.unsubscribe();
+    this._graphCreatingEvent.unsubscribe();
   }
 
-  public YAxisId(): string{
-    return `${this._yAxisId}-${this.GraphUniqueName}`;
+  public yAxisId(): string{
+    return `${this._yAxisId}-${this._graphUniqueName}`;
   }
 
-  public GetNameForBox(): string{
-    return `boxFor${this.GraphUniqueName}`;
+  public getNameForBox(): string{
+    return `boxFor${this._graphUniqueName}`;
   }
 
   private _yAxisChartOptions = {
@@ -95,12 +95,6 @@ export class GraphComponent {
       legend: {display : false},
     },
     scales: {
-      //x: {
-      //  ticks: {
-      //    display : true,
-      //    align: 'start'
-      //  }
-      //},
       y: {
         beginAtZero: true,
         ticks: {display : false},
@@ -111,7 +105,7 @@ export class GraphComponent {
     }
   };
 
-  private ShowGraph(graphPoints: GraphPoint[]){
+  private showGraph(graphPoints: GraphPoint[]): void{
     var yAxisDataSet ={
       // min and max values
       labels: ['0','1'],
@@ -133,37 +127,37 @@ export class GraphComponent {
     };
 
     // This is chart only for creating Y axis.
-    this._yAxisChart = new Chart(this.YAxisId(), {
+    this._yAxisChart = new Chart(this.yAxisId(), {
       type: 'bar',
       data: yAxisDataSet,
       options: this._yAxisChartOptions
     });
 
     // This is real chart.
-    this._currentChart = new Chart(this.GraphUniqueName, {
+    this._currentChart = new Chart(this._graphUniqueName, {
       type: 'line',
       data: currentChartDataSet,
       options: this._mainChartOptions
     });
-    //this._currentChart!.options!.scales!['x']!.ticks!.align = 'center';
-    //this._currentChart!.update();
+    (this._currentChart!.options!.scales!['x']!.ticks! as any).align = 'start';
+    this._currentChart!.update();
 
-    var box = document.querySelector<HTMLElement>("."+this.GetNameForBox());
+    var box = document.querySelector<HTMLElement>("."+this.getNameForBox());
     var barLength = this._currentChart.data.labels!.length;
 
     if(barLength > this._borderNumberOfPointsForFixedGraphWidth){
       var chartWidth = barLength * this._distanceBetweenPoints;
       // Set the size for a unique box if the graph has many points.
-      this.SetChartBoxSize(box!, `${chartWidth}px`, '100%');
+      this.setChartBoxSize(box!, `${chartWidth}px`, '100%');
     }
     else{
       // Set the normal size for a unique box if the graph has few points.
-      this.SetChartBoxSize(box!, `100%`, '100%');
+      this.setChartBoxSize(box!, `100%`, '100%');
     }
 
   }
 
-  private SetChartBoxSize(boxHTMLElement: HTMLElement, width: string, height: string){
+  private setChartBoxSize(boxHTMLElement: HTMLElement, width: string, height: string): void{
     if(boxHTMLElement !== null){
       boxHTMLElement.style.width = width;
       boxHTMLElement.style.height = height;

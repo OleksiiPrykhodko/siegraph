@@ -86,7 +86,7 @@ export class GraphAccordionComponent implements OnInit {
         this._indexOfFirstPointNowShowed,
         this._maxNumberOfShowedPoints
       );
-      this._childGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+      this._childGraphComponent._graphCreatingEvent.emit(pointsForShowing);
     }
   }
 
@@ -100,7 +100,7 @@ export class GraphAccordionComponent implements OnInit {
         this._indexOfFirstPointNowShowed,
         this._maxNumberOfShowedPoints
       );
-      this._childGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+      this._childGraphComponent._graphCreatingEvent.emit(pointsForShowing);
     }
   }
 
@@ -141,7 +141,7 @@ export class GraphAccordionComponent implements OnInit {
           indexOfFirstPointForSelectedDay,
           this._maxNumberOfShowedPoints
         );
-        this._childGraphComponent.GraphCreatingEvent.emit(pointsForShowing);
+        this._childGraphComponent._graphCreatingEvent.emit(pointsForShowing);
       }
     }
   }
