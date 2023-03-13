@@ -34,7 +34,7 @@
       <button (click)="ShowPreviousPoints()" type="button" class="btn btn-success btn-lg" [ngClass]="{'disabled': !CheckPreviousButtonActivity()}">Previous</button>
       <button (click)="ShowNextPoints()" type="button" class="btn btn-success btn-lg" [ngClass]="{'disabled': !CheckNextButtonActivity()}">Next</button>
       -->
-      <app-graph [GraphUniqueName] = "getTagName()" [GraphPoints]="getFirstInitPoints()"></app-graph>
+      <app-graph [_graphUniqueName] = "getTagName()" [_graphPoints]="getFirstInitPoints()"></app-graph>
     </div>
   </div>
 </div>

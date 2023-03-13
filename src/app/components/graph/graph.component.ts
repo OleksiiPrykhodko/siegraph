@@ -158,7 +158,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   private setChartBoxSize(boxHTMLElement: HTMLElement, width: string, height: string): void{
-    if(boxHTMLElement !== null){
+    if(boxHTMLElement){
       boxHTMLElement.style.width = width;
       boxHTMLElement.style.height = height;
     }
