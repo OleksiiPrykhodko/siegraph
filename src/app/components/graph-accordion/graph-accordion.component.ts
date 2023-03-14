@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, OnInit } from '@angular/core';
 import { GraphComponent } from '../graph/graph.component';
 import { GraphPoint } from '../../models/graph/graph-point';
 import { TagPoints } from 'src/app/models/graph/tag-points';
+import { ScrollDirection } from 'src/app/models/common/scroll-direction';
 
 @Component({
   selector: 'app-graph-accordion',
@@ -86,7 +87,8 @@ export class GraphAccordionComponent implements OnInit {
         this._indexOfFirstPointNowShowed,
         this._maxNumberOfShowedPoints
       );
-      this._childGraphComponent._graphCreatingEvent.emit(pointsForShowing);
+      this._childGraphComponent._showGraphEvent.emit(pointsForShowing);
+      this._childGraphComponent._scrollGraphBoxEvent.emit(ScrollDirection.ToEnd);
     }
   }
 
@@ -100,7 +102,8 @@ export class GraphAccordionComponent implements OnInit {
         this._indexOfFirstPointNowShowed,
         this._maxNumberOfShowedPoints
       );
-      this._childGraphComponent._graphCreatingEvent.emit(pointsForShowing);
+      this._childGraphComponent._showGraphEvent.emit(pointsForShowing);
+      this._childGraphComponent._scrollGraphBoxEvent.emit(ScrollDirection.ToStart);
     }
   }
 
@@ -141,7 +144,7 @@ export class GraphAccordionComponent implements OnInit {
           indexOfFirstPointForSelectedDay,
           this._maxNumberOfShowedPoints
         );
-        this._childGraphComponent._graphCreatingEvent.emit(pointsForShowing);
+        this._childGraphComponent._showGraphEvent.emit(pointsForShowing);
       }
     }
   }

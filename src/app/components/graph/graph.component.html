@@ -2,7 +2,7 @@
   <div class="colSmall">
     <canvas [id]="yAxisId()"></canvas>
   </div>
-  <div class="colLarge">
+  <div class="colLarge" [class]="getClassNameForGraphBox()">
     <div [class]="getNameForBox()">
       <canvas [id]="_graphUniqueName"></canvas>
     </div>

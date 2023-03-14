@@ -13,6 +13,7 @@ import {
   registerables,
 } from 'node_modules/chart.js';
 import { GraphPoint } from '../../models/graph/graph-point';
+import { ScrollDirection } from '../../models/common/scroll-direction'
 
 Chart.register(...registerables);
 
@@ -26,7 +27,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
 
   @Input() public _graphPoints: GraphPoint[];
   @Input() public _graphUniqueName: string;
-  @Output() public _graphCreatingEvent = new EventEmitter<GraphPoint[]>();
+  @Output() public _showGraphEvent = new EventEmitter<GraphPoint[]>();
+  @Output() public _scrollGraphBoxEvent = new EventEmitter<ScrollDirection>();
 
   private _yAxisId: string = "graphYAxis";
   private _yAxisChart: Chart;
@@ -40,26 +42,33 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
 
 
   ngOnInit(){
-    this._graphCreatingEvent.subscribe((points: GraphPoint[]) =>
+    this._showGraphEvent.subscribe((points: GraphPoint[]) =>
     {
-      this._yAxisChart.destroy();
-      this._currentChart.destroy();
-      this.showGraph(points);
+      this.setPointsToGraph(points);
+    });
+    this._scrollGraphBoxEvent.subscribe((direction)=>
+    {
+      this.scrollGraphBoxTo(direction);
     });
   }
 
   ngAfterViewInit(){
-    this.showGraph(this._graphPoints);
+    this.createGraph(this._graphPoints);
   }
 
   ngOnDestroy(){
     this._yAxisChart.destroy();
     this._currentChart.destroy();
-    this._graphCreatingEvent.unsubscribe();
+    this._showGraphEvent.unsubscribe();
+    this._scrollGraphBoxEvent.unsubscribe();
   }
 
   public yAxisId(): string{
     return `${this._yAxisId}-${this._graphUniqueName}`;
+  }
+
+  public getClassNameForGraphBox(): string{
+    return `colFor${this._graphUniqueName}`
   }
 
   public getNameForBox(): string{
@@ -105,12 +114,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
     }
   };
 
-  private showGraph(graphPoints: GraphPoint[]): void{
+  private createGraph(graphPoints: GraphPoint[]): void{
     var yAxisDataSet ={
-      // min and max values
+      // Set 2 points on x axis for min and max values.
       labels: ['0','1'],
       datasets: [{
-        // min and max value from incoming data
+        // Min and max value from incoming data.
         data: [Math.min(...(graphPoints.map(point => point.Y))),
               Math.max(...(graphPoints.map(point => point.Y)))],
         borderWidth: 0
@@ -140,13 +149,17 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
       options: this._mainChartOptions
     });
     (this._currentChart!.options!.scales!['x']!.ticks! as any).align = 'start';
-    this._currentChart!.update();
+    this._currentChart.update();
 
+    this.resizeChartBox();
+  }
+
+  private resizeChartBox(): void{
     var box = document.querySelector<HTMLElement>("."+this.getNameForBox());
-    var barLength = this._currentChart.data.labels!.length;
+    var numberOfPointsOnGraph = this._currentChart.data.labels!.length;
 
-    if(barLength > this._borderNumberOfPointsForFixedGraphWidth){
-      var chartWidth = barLength * this._distanceBetweenPoints;
+    if(numberOfPointsOnGraph > this._borderNumberOfPointsForFixedGraphWidth){
+      var chartWidth = numberOfPointsOnGraph * this._distanceBetweenPoints;
       // Set the size for a unique box if the graph has many points.
       this.setChartBoxSize(box!, `${chartWidth}px`, '100%');
     }
@@ -154,7 +167,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
       // Set the normal size for a unique box if the graph has few points.
       this.setChartBoxSize(box!, `100%`, '100%');
     }
-
   }
 
   private setChartBoxSize(boxHTMLElement: HTMLElement, width: string, height: string): void{
@@ -163,4 +175,36 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
       boxHTMLElement.style.height = height;
     }
   }
+
+  private setPointsToGraph(graphPoints: GraphPoint[]): void{
+    if(this._currentChart){
+      // Remove all old points and set new.
+      var onAxisX = graphPoints.map(point => point.X)
+      this._currentChart.data.labels = onAxisX;
+      var onAxisY = graphPoints.map(point => point.Y);
+      this._currentChart.data.datasets.forEach(dataset => dataset.data = onAxisY);
+      // 'none' argument can to update chart without animations.
+      this._currentChart.update();
+
+      // Set new max and min point to Y axis chart for resizing of Y axis.
+      this._yAxisChart.data.datasets.forEach(dataset => dataset.data =
+        [Math.min(...(onAxisY)),
+          Math.max(...(onAxisY))]);
+      this._yAxisChart.update();
+
+      this.resizeChartBox();
+    }
+  }
+
+  private scrollGraphBoxTo(scrollDirection: ScrollDirection): void{
+    var box = document.querySelector<HTMLElement>("." + this.getClassNameForGraphBox()) as HTMLElement;
+
+    if(scrollDirection === ScrollDirection.ToStart){
+      box.scrollLeft = 0;
+    }
+    if(scrollDirection === ScrollDirection.ToEnd){
+      box.scrollLeft = box.scrollWidth;
+    }
+  }
+
 }
