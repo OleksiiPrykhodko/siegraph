@@ -1,40 +1,33 @@
 <div class="accordion-item">
-  <h2 class="accordion-header" [id]="'panelsStayOpen-heading-'+GetTagName()">
-    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#panelsStayOpen-collapse-'+GetTagName()" aria-expanded="false" [attr.aria-controls]="'panelsStayOpen-collapse-'+GetTagName()">
-      {{GetTagName()}}
+  <h2 class="accordion-header" [id]="'panelsStayOpen-heading-' + getTagName()">
+    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#panelsStayOpen-collapse-' + getTagName()" aria-expanded="false" [attr.aria-controls]="'panelsStayOpen-collapse-' + getTagName()">
+      {{getTagName()}}
     </button>
   </h2>
-  <div [id]="'panelsStayOpen-collapse-'+GetTagName()" class="accordion-collapse collapse" [attr.aria-labelledby]="'panelsStayOpen-heading-'+GetTagName()">
-    <div class="accordion-body border border-info">
+  <div [id]="'panelsStayOpen-collapse-' + getTagName()" class="accordion-collapse collapse" [attr.aria-labelledby]="'panelsStayOpen-heading-' + getTagName()">
+    <div class="accordion-body">
       <div class="row justify-content-between">
         <div class="col-auto">
           <mat-form-field class="example-full-width" subscriptSizing="dynamic" > <!--appearance="outline"-->
             <mat-label>Choose a date</mat-label>
-            <input matInput (click)="picker.open()" [min]="GetMinDate()" [max]="GetMaxDate()" [matDatepickerFilter]="DateFilter" [matDatepicker]="picker" (dateChange)="SetDate($event)" >
+            <input matInput (click)="picker.open()" [matDatepickerFilter]="dateFilter" [matDatepicker]="picker" (dateChange)="setDate($event)" >
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </div>
         <div class="col-auto">
-          <p>{{GetFirstPointIndex() + 1}} - {{GetLastShowedsPointNumber()}} / {{GetAllPointsNumber()}}</p>
+          <p>{{getFirstPointIndex() + 1}} - {{getLastShowedsPointNumber()}} / {{getAllPointsNumber()}}</p>
         </div>
         <div class="col-auto">
-          <button mat-fab (click)="ShowPreviousPoints()" [disabled]="!CheckPreviousButtonActivity()" color="warn" aria-label="Example icon button with a home icon">
+          <button mat-fab (click)="showPreviousPoints()" [disabled]="!checkPreviousButtonActivity()" color="warn" aria-label="Example icon button with a home icon">
             <mat-icon>arrow_back_ios_new</mat-icon>
           </button>
-          <button mat-fab (click)="ShowNextPoints()" [disabled]="!CheckNextButtonActivity()" color="warn" aria-label="Example icon button with a home icon">
+          <button mat-fab (click)="showNextPoints()" [disabled]="!checkNextButtonActivity()" color="warn" aria-label="Example icon button with a home icon">
             <mat-icon>arrow_forward_ios_new</mat-icon>
           </button>
         </div>
       </div>
-
-
-
-        <!--
-      <button (click)="ShowPreviousPoints()" type="button" class="btn btn-success btn-lg" [ngClass]="{'disabled': !CheckPreviousButtonActivity()}">Previous</button>
-      <button (click)="ShowNextPoints()" type="button" class="btn btn-success btn-lg" [ngClass]="{'disabled': !CheckNextButtonActivity()}">Next</button>
-      -->
-      <app-graph [GraphUniqueName] = "GetTagName()" [GraphPoints]="GetFirstInitPoints()"></app-graph>
+      <app-graph [_graphUniqueName] = "getTagName()" [_graphPoints]="getFirstInitPoints()"></app-graph>
     </div>
   </div>
 </div>

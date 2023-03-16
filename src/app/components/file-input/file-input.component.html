@@ -1,6 +1,6 @@
 <mat-form-field subscriptSizing="dynamic"> <!--appearance="outline"-->
   <mat-label>Select file</mat-label>
    <input matInput readonly="true" type="text" [id]="_fakeFileInputID" (click)="hiddenInput.click()">
-   <input hidden type="file" accept=".csv" #hiddenInput (change)="GetFileOnLoad($event)">
+   <input hidden type="file" accept=".csv" #hiddenInput (change)="getFileOnLoad($event)">
   <mat-icon (click)="hiddenInput.click()" matSuffix>folder_open</mat-icon> <!--folder-->
 </mat-form-field>

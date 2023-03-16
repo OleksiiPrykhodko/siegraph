@@ -1,26 +1,23 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
+
 export class FileLoadService {
+  private FileLoadedEventEmitter: EventEmitter<File> = new EventEmitter<File>();
 
-  public FileLoadedEventEmitter: EventEmitter<File> = new EventEmitter<File>();
-
-  constructor() { }
-
-  public Subscribe(next: ((value: File) => void)){
-   this.FileLoadedEventEmitter.subscribe(next);
+  public subscribe(next: (value: File) => void): void {
+    this.FileLoadedEventEmitter.subscribe(next);
   }
 
-  public Emit(file: File){
-    if(file != null){
+  public emit(file: File): void {
+    if (file) {
       this.FileLoadedEventEmitter.emit(file);
     }
   }
 
-  public Unsubscribe(){
+  public unsubscribe(): void {
     this.FileLoadedEventEmitter.unsubscribe();
   }
-
 }
