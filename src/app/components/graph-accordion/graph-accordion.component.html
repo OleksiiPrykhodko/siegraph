@@ -5,7 +5,7 @@
     </button>
   </h2>
   <div [id]="'panelsStayOpen-collapse-' + getTagName()" class="accordion-collapse collapse" [attr.aria-labelledby]="'panelsStayOpen-heading-' + getTagName()">
-    <div class="accordion-body border border-info">
+    <div class="accordion-body">
       <div class="row justify-content-between">
         <div class="col-auto">
           <mat-form-field class="example-full-width" subscriptSizing="dynamic" > <!--appearance="outline"-->
@@ -27,13 +27,6 @@
           </button>
         </div>
       </div>
-
-
-
-        <!--
-      <button (click)="ShowPreviousPoints()" type="button" class="btn btn-success btn-lg" [ngClass]="{'disabled': !CheckPreviousButtonActivity()}">Previous</button>
-      <button (click)="ShowNextPoints()" type="button" class="btn btn-success btn-lg" [ngClass]="{'disabled': !CheckNextButtonActivity()}">Next</button>
-      -->
       <app-graph [_graphUniqueName] = "getTagName()" [_graphPoints]="getFirstInitPoints()"></app-graph>
     </div>
   </div>
