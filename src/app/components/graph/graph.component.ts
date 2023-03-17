@@ -34,11 +34,15 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private _yAxisChart: Chart;
   private _currentChart: Chart;
 
-  private _lineWidthOnGraph: number = 3;
+  private _ticksOnAxesColor: string = "#dee2e6";
+  private _ticksOnAxesFontSize: number = 13;
+  private _gridOnGraphColor: string = "#495057";//"#001034";
+  private _lineOnGraphWidth: number = 2;
   // The number of points after which the distance between points becomes fixed.
   private _borderNumberOfPointsForFixedGraphWidth: number = 8;
   // The distance in pixels between two points on the x-axis in.
   private _distanceBetweenPoints: number = 140;
+
 
 
   ngOnInit(){
@@ -78,19 +82,23 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private _yAxisChartOptions = {
     maintainAspectRatio: false,
     layout:{
-      padding: { bottom : 56}
+      padding: { bottom : 56 }
     },
     plugins: {
-      legend: {display : false},
+      legend: { display : false },
     },
     scales: {
       x:{
-        ticks: {display : false},
-        grid: {drawTicks : false}
+        ticks: { display : false },
+        grid: { drawTicks : false }
       },
       y: {
+        ticks: {
+          color : this._ticksOnAxesColor,
+          font: { size: this._ticksOnAxesFontSize }
+        },
         beginAtZero: true,
-        afterFit: (ctx : any) => {ctx.width = 87}
+        afterFit: (ctx : any) => { ctx.width = 87 }
       }
     }
   };
@@ -101,13 +109,23 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
       padding: { top : 10, bottom: 10}
     },
     plugins: {
-      legend: {display : false},
+      legend: { display : false },
     },
     scales: {
+      x: {
+        ticks: {
+          color : this._ticksOnAxesColor,
+          font: { size: this._ticksOnAxesFontSize }
+        },
+        grid: {
+          color: this._gridOnGraphColor,
+        }
+      },
       y: {
         beginAtZero: true,
-        ticks: {display : false},
+        ticks: { display : false },
         grid: {
+          color: this._gridOnGraphColor,
           drawTicks : false
         }
       }
@@ -131,7 +149,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
       datasets: [{
         label: ' Value ',
         data: graphPoints.map(point => point.Y),
-        borderWidth: this._lineWidthOnGraph
+        borderWidth: this._lineOnGraphWidth
       }]
     };
 
