@@ -7,7 +7,7 @@ import { ScrollDirection } from 'src/app/models/common/scroll-direction';
 @Component({
   selector: 'app-graph-accordion',
   templateUrl: './graph-accordion.component.html',
-  styleUrls: ['./graph-accordion.component.scss'],
+  styleUrls: ['./graph-accordion.component.scss']
 })
 
 export class GraphAccordionComponent implements OnInit {
