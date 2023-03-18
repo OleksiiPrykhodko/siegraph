@@ -37,6 +37,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private _ticksOnAxesColor: string = "#dee2e6";
   private _ticksOnAxesFontSize: number = 13;
   private _gridOnGraphColor: string = "#495057";//"#001034";
+  private _lineOnGraphColor: string = "#1de9b6";
   private _lineOnGraphWidth: number = 2;
   // The number of points after which the distance between points becomes fixed.
   private _borderNumberOfPointsForFixedGraphWidth: number = 8;
@@ -149,6 +150,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
       datasets: [{
         label: ' Value ',
         data: graphPoints.map(point => point.Y),
+        borderColor: this._lineOnGraphColor,
         borderWidth: this._lineOnGraphWidth
       }]
     };
