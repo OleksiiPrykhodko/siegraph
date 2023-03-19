@@ -17,7 +17,6 @@ export class GraphAccordionComponent implements OnInit {
 
   private _tagName: string = 'TagName';
   private _allPoints: GraphPoint[] = [];
-  private _timeStampsOfAllPoints: Date[] = [];
   private _indexOfFirstPointNowShowed: number = 0;
   private readonly _maxNumberOfShowedPoints: number = 20;
   private _selectedDate: Date;
@@ -26,12 +25,6 @@ export class GraphAccordionComponent implements OnInit {
     if(this._graphPoints){
       this._tagName = this._graphPoints.Name;
       this._allPoints = this._graphPoints.Points;
-      this._graphPoints.Points?.forEach((point) => {
-        var pointDate = new Date(point.X);
-        if (pointDate.toString() !== "Invalid Date") {
-          this._timeStampsOfAllPoints.push(pointDate);
-        }
-      });
     }
   }
 
@@ -113,11 +106,11 @@ export class GraphAccordionComponent implements OnInit {
     const day = (date || new Date()).getDate();
     const month = (date || new Date()).getMonth();
     const year = (date || new Date()).getFullYear();
-    var result = this._timeStampsOfAllPoints.some(
-      (date) =>
-        date.getFullYear() == year &&
-        date.getMonth() == month &&
-        date.getDate() == day
+    var result = this._allPoints.some(
+      (point) =>
+        point.X.getFullYear() == year &&
+        point.X.getMonth() == month &&
+        point.X.getDate() == day
     );
 
     return result;
@@ -131,13 +124,13 @@ export class GraphAccordionComponent implements OnInit {
   }
 
   public showSelectedDatePoints(): void {
-    if (this._selectedDate && this._timeStampsOfAllPoints.length > 0){
+    if (this._selectedDate && this._allPoints.length > 0){
       var indexOfFirstPointForSelectedDay =
-        this._timeStampsOfAllPoints.findIndex(
-          (date) =>
-            date.getFullYear() == this._selectedDate.getFullYear() &&
-            date.getMonth() == this._selectedDate.getMonth() &&
-            date.getDate() == this._selectedDate.getDate()
+        this._allPoints.findIndex(
+          (point) =>
+            point.X.getFullYear() == this._selectedDate.getFullYear() &&
+            point.X.getMonth() == this._selectedDate.getMonth() &&
+            point.X.getDate() == this._selectedDate.getDate()
         );
       if (indexOfFirstPointForSelectedDay >= 0) {
         this._indexOfFirstPointNowShowed = indexOfFirstPointForSelectedDay;

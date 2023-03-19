@@ -77,15 +77,18 @@ export class GraphAccordionAggregatorComponent implements OnInit, OnDestroy {
       var nameValue = recordFields[0].replace(/["\s$]/g, '');
       // Remove quotes from record timestamp.
       var xValue = recordFields[1].replace(/["]/g, '');
-      var yValue = recordFields[2];
-      var graphPoint = new GraphPoint(xValue, yValue);
-      var oneOfTagPairs = tagValuesPaires.find(
-        (pair) => pair.Name === nameValue
-      );
-      if (oneOfTagPairs) {
-        oneOfTagPairs.Points.push(graphPoint);
-      } else {
-        tagValuesPaires.push(new TagPoints(nameValue, [graphPoint]));
+      var xValueAsDate = new Date(xValue);
+      if (xValueAsDate.toString() !== "Invalid Date") {
+        var yValue = recordFields[2];
+        var graphPoint = new GraphPoint(xValueAsDate, yValue);
+        var oneOfTagPairs = tagValuesPaires.find(
+          (pair) => pair.Name === nameValue
+        );
+        if (oneOfTagPairs) {
+          oneOfTagPairs.Points.push(graphPoint);
+        } else {
+          tagValuesPaires.push(new TagPoints(nameValue, [graphPoint]));
+        }
       }
     });
 
@@ -93,8 +96,8 @@ export class GraphAccordionAggregatorComponent implements OnInit, OnDestroy {
   }
 
   private sortListOfTagsPoints(listOfTagsPoints: TagPoints[]): void {
-    // Move the HMI device shutdown data to the end of the list.
     if (listOfTagsPoints?.length > 0) {
+      // Move the HMI device shutdown data to the end of the list.
       let hmiDeviceShutdownData = listOfTagsPoints.pop();
       listOfTagsPoints.sort((a, b) => a.Name.localeCompare(b.Name));
       listOfTagsPoints.push(hmiDeviceShutdownData!);

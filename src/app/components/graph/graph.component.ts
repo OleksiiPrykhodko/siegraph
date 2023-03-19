@@ -36,14 +36,13 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
 
   private _ticksOnAxesColor: string = "#dee2e6";
   private _ticksOnAxesFontSize: number = 13;
-  private _gridOnGraphColor: string = "#495057";//"#001034";
+  private _gridOnGraphColor: string = "#495057";
   private _lineOnGraphColor: string = "#1de9b6";
   private _lineOnGraphWidth: number = 2;
   // The number of points after which the distance between points becomes fixed.
   private _borderNumberOfPointsForFixedGraphWidth: number = 8;
   // The distance in pixels between two points on the x-axis in.
   private _distanceBetweenPoints: number = 140;
-
 
 
   ngOnInit(){
@@ -146,7 +145,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
     };
 
     var currentChartDataSet = {
-      labels: graphPoints.map(point => point.X),
+      labels: graphPoints.map(point => this.formDateToCustomTimeFormat(point.X as Date)),
       datasets: [{
         label: ' Value ',
         data: graphPoints.map(point => point.Y),
@@ -199,7 +198,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private setPointsToGraph(graphPoints: GraphPoint[]): void{
     if(this._currentChart){
       // Remove all old points and set new.
-      var onAxisX = graphPoints.map(point => point.X)
+      var onAxisX = graphPoints.map(point => this.formDateToCustomTimeFormat(point.X as Date));
       this._currentChart.data.labels = onAxisX;
       var onAxisY = graphPoints.map(point => point.Y);
       this._currentChart.data.datasets.forEach(dataset => dataset.data = onAxisY);
@@ -225,6 +224,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
     if(scrollDirection === ScrollDirection.ToEnd){
       box.scrollLeft = box.scrollWidth;
     }
+  }
+
+  private formDateToCustomTimeFormat(date: Date): string{
+    if(date.toString() === "Invalid Date"){
+      return "";
+    }
+    var month = date.getMonth() + 1 < 10 ? "0" + date.getMonth() : date.getMonth();
+    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+    var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    var second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+    return `${date.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
   }
 
 }
