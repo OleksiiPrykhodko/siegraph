@@ -17,7 +17,7 @@
             <mat-label>Choose a date</mat-label>
             <input matInput (click)="picker.open()"  [matDatepickerFilter]="dateFilter" [matDatepicker]="picker" (dateChange)="setDate($event)" >
             <mat-datepicker-toggle matIconSuffix [for]="picker" class="text-dark"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+            <mat-datepicker #picker startView="multi-year"></mat-datepicker>
           </mat-form-field>
         </div>
         <div class="col-auto d-none d-md-block fs-5">
