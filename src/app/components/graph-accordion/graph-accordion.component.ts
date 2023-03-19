@@ -18,8 +18,6 @@ export class GraphAccordionComponent implements OnInit {
   private _tagName: string = 'TagName';
   private _allPoints: GraphPoint[] = [];
   private _timeStampsOfAllPoints: Date[] = [];
-  private _minDate: Date;
-  private _maxDate: Date;
   private _indexOfFirstPointNowShowed: number = 0;
   private readonly _maxNumberOfShowedPoints: number = 20;
   private _selectedDate: Date;
