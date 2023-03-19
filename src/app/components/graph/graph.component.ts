@@ -39,8 +39,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private _gridOnGraphColor: string = "#495057";
   private _lineOnGraphColor: string = "#1de9b6";
   private _lineOnGraphWidth: number = 2;
-  // The number of points after which the distance between points becomes fixed.
-  private _borderNumberOfPointsForFixedGraphWidth: number = 8;
   // The distance in pixels between two points on the x-axis in.
   private _distanceBetweenPoints: number = 140;
 
@@ -176,16 +174,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private resizeChartBox(): void{
     var box = document.querySelector<HTMLElement>("."+this.getNameForBox());
     var numberOfPointsOnGraph = this._currentChart.data.labels!.length;
-
-    if(numberOfPointsOnGraph > this._borderNumberOfPointsForFixedGraphWidth){
-      var chartWidth = numberOfPointsOnGraph * this._distanceBetweenPoints;
-      // Set the size for a unique box if the graph has many points.
-      this.setChartBoxSize(box!, `${chartWidth}px`, '100%');
-    }
-    else{
-      // Set the normal size for a unique box if the graph has few points.
-      this.setChartBoxSize(box!, `100%`, '100%');
-    }
+    var chartWidth = numberOfPointsOnGraph * this._distanceBetweenPoints;
+    // Set the size for a unique box if the graph has many points.
+    this.setChartBoxSize(box!, `${chartWidth}px`, '100%');
   }
 
   private setChartBoxSize(boxHTMLElement: HTMLElement, width: string, height: string): void{
