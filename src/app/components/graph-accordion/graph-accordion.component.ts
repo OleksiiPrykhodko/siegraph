@@ -49,11 +49,15 @@ export class GraphAccordionComponent implements OnInit {
     return this._allPoints.length;
   }
 
-  public getLastShowedsPointNumber(): number {
+  public getLastShowedPointNumber(): number {
     return this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints >
       this._allPoints.length
       ? this._allPoints.length
       : this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints;
+  }
+
+  public getShowedPointsStatistic(): string {
+    return `${this.getFirstPointIndex() + 1} - ${this.getLastShowedPointNumber()} / ${this.getAllPointsNumber()}`;
   }
 
   public checkPreviousButtonActivity(): boolean {
