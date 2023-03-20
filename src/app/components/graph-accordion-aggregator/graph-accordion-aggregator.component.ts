@@ -26,6 +26,8 @@ export class GraphAccordionAggregatorComponent implements OnInit, OnDestroy {
   private _archiveRecords: string[];
   private _uniqueTagsPoints: TagPoints[];
   private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
+  public _fileWasSelected: boolean = false;
+  public _loadingProcess: boolean = false;
 
   constructor(private _fileLoadService: FileLoadService) { }
 
@@ -39,6 +41,9 @@ export class GraphAccordionAggregatorComponent implements OnInit, OnDestroy {
 
   private setFileOnLoad(file: File): void {
     if (file) {
+      this._fileWasSelected = true;
+      this._loadingProcess = true;
+
       this._file = file;
 
       // Destroy all accordions if they exist.
@@ -65,6 +70,8 @@ export class GraphAccordionAggregatorComponent implements OnInit, OnDestroy {
             this.initChildGraphAccordion(tagPoints)
           );
         });
+
+        this._loadingProcess = false;
       };
     }
   }
