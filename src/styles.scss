@@ -1,5 +1,5 @@
+//----------------------------Custom Theming for Angular Material--------------------//
 
-// Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 // Plus imports for other components in your app.
@@ -12,7 +12,8 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$SieGraph-primary: mat.define-palette(mat.$indigo-palette);
+$SieGraph-primary: mat.define-palette(mat.$teal-palette, A700);
+
 $SieGraph-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
@@ -37,11 +38,52 @@ $SieGraph-theme: mat.define-light-theme((
 
 body { font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-//----------------------------Redefining bootstrap variables--------------------//
+//----------------------------End of Custom Theming for Angular Material--------------------//
 
+//----------------------------Redefining Bootstrap variables--------------------//
 
+$gray-300: #dee2e6;
+$teal-light-siemens: #00e6dc;
+$teal-dark-siemens: #007993;
+$blue-dark-siemens: #000027;
+$blue-dark-tertiary-siemens: #001034;
+
+// Body background on dark mode
+$body-bg-dark: $blue-dark-siemens;
+
+// Body tertiary background on dark mode
+$body-tertiary-bg-dark: $blue-dark-tertiary-siemens;
+
+// Font collor on dark mode
+$body-color-dark: $gray-300;
+
+// Primary font collor on dark mode (class = "text-primary")
+$primary-text-dark:  $teal-light-siemens;
+
+// Border color on dark mode
+$border-color-dark: $teal-dark-siemens;
+
+// Accordion padding y
+$accordion-padding-y: 1.25rem;
+
+// Accordion bottom margin
+.accordion-item{
+  margin-bottom: 2rem;
+}
+
+// Angular materials input field colour
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: #00bfa5;
+}
+
+p{
+  margin-top: 1rem !important;
+}
 
 // DO NOT DELETE
 /* You can add global styles to this file, and also import other style files */
 @import "node_modules/bootstrap/scss/bootstrap";
+
+//----------------------------Enf of redefining Bootstrap variables--------------------//
+
 
