@@ -22,7 +22,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private _yAxisChart: Chart;
   private _currentChart: Chart;
 
-  private _ticksOnAxesColor: string = "#dee2e6";
+  private _ticksOnAxesColor: string = "#f8f9fa";
   private _ticksOnAxesFontSize: number = 13;
   private _gridOnGraphColor: string = "#495057";
   private _lineOnGraphColor: string = "#1de9b6";

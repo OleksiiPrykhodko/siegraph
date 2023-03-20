@@ -42,7 +42,7 @@ body { font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 //----------------------------Redefining Bootstrap variables--------------------//
 
-$gray-300: #dee2e6;
+$gray-100: #f8f9fa;
 $teal-light-siemens: #00e6dc;
 $teal-dark-siemens: #007993;
 $blue-dark-siemens: #000027;
@@ -55,7 +55,7 @@ $body-bg-dark: $blue-dark-siemens;
 $body-tertiary-bg-dark: $blue-dark-tertiary-siemens;
 
 // Font collor on dark mode
-$body-color-dark: $gray-300;
+$body-color-dark: $gray-100;
 
 // Primary font collor on dark mode (class = "text-primary")
 $primary-text-dark:  $teal-light-siemens;
