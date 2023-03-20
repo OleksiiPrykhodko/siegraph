@@ -26,8 +26,8 @@ export class GraphAccordionAggregatorComponent implements OnInit, OnDestroy {
   private _archiveRecords: string[];
   private _uniqueTagsPoints: TagPoints[];
   private _graphAccordionRefs: ComponentRef<GraphAccordionComponent>[] = [];
-  public _fileWasSelected: boolean = false;
-  public _loadingProcess: boolean = false;
+  private _fileWasSelected: boolean = false;
+  private _loadingProcess: boolean = false;
 
   constructor(private _fileLoadService: FileLoadService) { }
 
@@ -37,6 +37,14 @@ export class GraphAccordionAggregatorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._fileLoadService.unsubscribe();
+  }
+
+  public getInfoMessageState(): boolean{
+    return this._fileWasSelected;
+  }
+
+  public getSpinnerState(): boolean{
+    return this._loadingProcess;
   }
 
   private setFileOnLoad(file: File): void {
