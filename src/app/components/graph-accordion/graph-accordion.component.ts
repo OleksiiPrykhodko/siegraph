@@ -18,7 +18,7 @@ export class GraphAccordionComponent implements OnInit {
   private _tagName: string = 'TagName';
   private _allPoints: GraphPoint[] = [];
   private _indexOfFirstPointNowShowed: number = 0;
-  private readonly _maxNumberOfShowedPoints: number = 20;
+  private readonly _maxNumberOfShowedPoints: number = 200;
   private _selectedDate: Date;
 
   ngOnInit(): void {
