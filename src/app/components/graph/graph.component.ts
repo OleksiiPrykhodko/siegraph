@@ -1,17 +1,5 @@
-import { Component, Input, OnInit, AfterViewInit, OnDestroy, Output, EventEmitter} from '@angular/core';
-import {
-  Chart,
-  ChartType,
-  ChartOptions,
-  ChartData,
-  Colors,
-  BubbleController,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  Legend,
-  registerables,
-} from 'node_modules/chart.js';
+import { Component, Input, OnInit, AfterViewInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Chart, registerables } from 'node_modules/chart.js';
 import { GraphPoint } from '../../models/graph/graph-point';
 import { ScrollDirection } from '../../models/common/scroll-direction'
 
@@ -39,6 +27,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private _gridOnGraphColor: string = "#495057";
   private _lineOnGraphColor: string = "#1de9b6";
   private _lineOnGraphWidth: number = 2;
+  private _pointOnGraphStyle: string = "triangle";
+  private _pointOnGraphRadius: number = 6;
+  private _pointOnGraphRadiusOnHover: number = 10;
   // The distance in pixels between two points on the x-axis in.
   private _distanceBetweenPoints: number = 140;
 
@@ -148,7 +139,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
         label: ' Value ',
         data: graphPoints.map(point => point.Y),
         borderColor: this._lineOnGraphColor,
-        borderWidth: this._lineOnGraphWidth
+        borderWidth: this._lineOnGraphWidth,
+        pointStyle: this._pointOnGraphStyle,
+        pointRadius: this._pointOnGraphRadius,
+        pointHoverRadius: this._pointOnGraphRadiusOnHover
       }]
     };
 
