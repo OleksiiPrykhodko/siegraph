@@ -1,17 +1,5 @@
-import { Component, Input, OnInit, AfterViewInit, OnDestroy, Output, EventEmitter} from '@angular/core';
-import {
-  Chart,
-  ChartType,
-  ChartOptions,
-  ChartData,
-  Colors,
-  BubbleController,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  Legend,
-  registerables,
-} from 'node_modules/chart.js';
+import { Component, Input, OnInit, AfterViewInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Chart, registerables } from 'node_modules/chart.js';
 import { GraphPoint } from '../../models/graph/graph-point';
 import { ScrollDirection } from '../../models/common/scroll-direction'
 
@@ -34,9 +22,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private _yAxisChart: Chart;
   private _currentChart: Chart;
 
-  private _lineWidthOnGraph: number = 3;
-  // The number of points after which the distance between points becomes fixed.
-  private _borderNumberOfPointsForFixedGraphWidth: number = 8;
+  private _ticksOnAxesColor: string = "#f8f9fa";
+  private _ticksOnAxesFontSize: number = 13;
+  private _gridOnGraphColor: string = "#495057";
+  private _lineOnGraphColor: string = "#1de9b6";
+  private _lineOnGraphWidth: number = 2;
+  private _pointOnGraphStyle: string = "triangle";
+  private _pointOnGraphRadius: number = 6;
+  private _pointOnGraphRadiusOnHover: number = 10;
   // The distance in pixels between two points on the x-axis in.
   private _distanceBetweenPoints: number = 140;
 
@@ -78,19 +71,23 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private _yAxisChartOptions = {
     maintainAspectRatio: false,
     layout:{
-      padding: { bottom : 56}
+      padding: { bottom : 56 }
     },
     plugins: {
-      legend: {display : false},
+      legend: { display : false },
     },
     scales: {
       x:{
-        ticks: {display : false},
-        grid: {drawTicks : false}
+        ticks: { display : false },
+        grid: { drawTicks : false }
       },
       y: {
+        ticks: {
+          color : this._ticksOnAxesColor,
+          font: { size: this._ticksOnAxesFontSize }
+        },
         beginAtZero: true,
-        afterFit: (ctx : any) => {ctx.width = 87}
+        afterFit: (ctx : any) => { ctx.width = 87 }
       }
     }
   };
@@ -101,13 +98,23 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
       padding: { top : 10, bottom: 10}
     },
     plugins: {
-      legend: {display : false},
+      legend: { display : false },
     },
     scales: {
+      x: {
+        ticks: {
+          color : this._ticksOnAxesColor,
+          font: { size: this._ticksOnAxesFontSize }
+        },
+        grid: {
+          color: this._gridOnGraphColor,
+        }
+      },
       y: {
         beginAtZero: true,
-        ticks: {display : false},
+        ticks: { display : false },
         grid: {
+          color: this._gridOnGraphColor,
           drawTicks : false
         }
       }
@@ -127,11 +134,15 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
     };
 
     var currentChartDataSet = {
-      labels: graphPoints.map(point => point.X),
+      labels: graphPoints.map(point => this.formDateToCustomTimeFormat(point.X as Date)),
       datasets: [{
         label: ' Value ',
         data: graphPoints.map(point => point.Y),
-        borderWidth: this._lineWidthOnGraph
+        borderColor: this._lineOnGraphColor,
+        borderWidth: this._lineOnGraphWidth,
+        pointStyle: this._pointOnGraphStyle,
+        pointRadius: this._pointOnGraphRadius,
+        pointHoverRadius: this._pointOnGraphRadiusOnHover
       }]
     };
 
@@ -157,16 +168,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private resizeChartBox(): void{
     var box = document.querySelector<HTMLElement>("."+this.getNameForBox());
     var numberOfPointsOnGraph = this._currentChart.data.labels!.length;
-
-    if(numberOfPointsOnGraph > this._borderNumberOfPointsForFixedGraphWidth){
-      var chartWidth = numberOfPointsOnGraph * this._distanceBetweenPoints;
-      // Set the size for a unique box if the graph has many points.
-      this.setChartBoxSize(box!, `${chartWidth}px`, '100%');
-    }
-    else{
-      // Set the normal size for a unique box if the graph has few points.
-      this.setChartBoxSize(box!, `100%`, '100%');
-    }
+    var chartWidth = numberOfPointsOnGraph * this._distanceBetweenPoints;
+    // Set the size for a unique box if the graph has many points.
+    this.setChartBoxSize(box!, `${chartWidth}px`, '100%');
   }
 
   private setChartBoxSize(boxHTMLElement: HTMLElement, width: string, height: string): void{
@@ -179,7 +183,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
   private setPointsToGraph(graphPoints: GraphPoint[]): void{
     if(this._currentChart){
       // Remove all old points and set new.
-      var onAxisX = graphPoints.map(point => point.X)
+      var onAxisX = graphPoints.map(point => this.formDateToCustomTimeFormat(point.X as Date));
       this._currentChart.data.labels = onAxisX;
       var onAxisY = graphPoints.map(point => point.Y);
       this._currentChart.data.datasets.forEach(dataset => dataset.data = onAxisY);
@@ -205,6 +209,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy{
     if(scrollDirection === ScrollDirection.ToEnd){
       box.scrollLeft = box.scrollWidth;
     }
+  }
+
+  private formDateToCustomTimeFormat(date: Date): string{
+    if(date.toString() === "Invalid Date"){
+      return "";
+    }
+    var month = date.getMonth() + 1 < 10 ? "0" + date.getMonth() : date.getMonth();
+    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+    var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    var second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+    return `${date.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
   }
 
 }

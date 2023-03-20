@@ -7,7 +7,7 @@ import { ScrollDirection } from 'src/app/models/common/scroll-direction';
 @Component({
   selector: 'app-graph-accordion',
   templateUrl: './graph-accordion.component.html',
-  styleUrls: ['./graph-accordion.component.scss'],
+  styleUrls: ['./graph-accordion.component.scss']
 })
 
 export class GraphAccordionComponent implements OnInit {
@@ -17,23 +17,14 @@ export class GraphAccordionComponent implements OnInit {
 
   private _tagName: string = 'TagName';
   private _allPoints: GraphPoint[] = [];
-  private _timeStampsOfAllPoints: Date[] = [];
-  private _minDate: Date;
-  private _maxDate: Date;
   private _indexOfFirstPointNowShowed: number = 0;
-  private readonly _maxNumberOfShowedPoints: number = 20;
+  private readonly _maxNumberOfShowedPoints: number = 200;
   private _selectedDate: Date;
 
   ngOnInit(): void {
     if(this._graphPoints){
       this._tagName = this._graphPoints.Name;
       this._allPoints = this._graphPoints.Points;
-      this._graphPoints.Points?.forEach((point) => {
-        var pointDate = new Date(point.X);
-        if (pointDate.toString() !== "Invalid Date") {
-          this._timeStampsOfAllPoints.push(pointDate);
-        }
-      });
     }
   }
 
@@ -49,11 +40,15 @@ export class GraphAccordionComponent implements OnInit {
     return this._allPoints.length;
   }
 
-  public getLastShowedsPointNumber(): number {
+  public getLastShowedPointNumber(): number {
     return this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints >
       this._allPoints.length
       ? this._allPoints.length
       : this._indexOfFirstPointNowShowed + this._maxNumberOfShowedPoints;
+  }
+
+  public getShowedPointsStatistic(): string {
+    return `${this.getFirstPointIndex() + 1} - ${this.getLastShowedPointNumber()} / ${this.getAllPointsNumber()}`;
   }
 
   public checkPreviousButtonActivity(): boolean {
@@ -111,11 +106,11 @@ export class GraphAccordionComponent implements OnInit {
     const day = (date || new Date()).getDate();
     const month = (date || new Date()).getMonth();
     const year = (date || new Date()).getFullYear();
-    var result = this._timeStampsOfAllPoints.some(
-      (date) =>
-        date.getFullYear() == year &&
-        date.getMonth() == month &&
-        date.getDate() == day
+    var result = this._allPoints.some(
+      (point) =>
+        point.X.getFullYear() == year &&
+        point.X.getMonth() == month &&
+        point.X.getDate() == day
     );
 
     return result;
@@ -129,13 +124,13 @@ export class GraphAccordionComponent implements OnInit {
   }
 
   public showSelectedDatePoints(): void {
-    if (this._selectedDate && this._timeStampsOfAllPoints.length > 0){
+    if (this._selectedDate && this._allPoints.length > 0){
       var indexOfFirstPointForSelectedDay =
-        this._timeStampsOfAllPoints.findIndex(
-          (date) =>
-            date.getFullYear() == this._selectedDate.getFullYear() &&
-            date.getMonth() == this._selectedDate.getMonth() &&
-            date.getDate() == this._selectedDate.getDate()
+        this._allPoints.findIndex(
+          (point) =>
+            point.X.getFullYear() == this._selectedDate.getFullYear() &&
+            point.X.getMonth() == this._selectedDate.getMonth() &&
+            point.X.getDate() == this._selectedDate.getDate()
         );
       if (indexOfFirstPointForSelectedDay >= 0) {
         this._indexOfFirstPointNowShowed = indexOfFirstPointForSelectedDay;
