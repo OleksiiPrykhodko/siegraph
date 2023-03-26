@@ -13,3 +13,4 @@
 - [Bootstrap](https://getbootstrap.com/)
 - [Fontawesome](https://fontawesome.com/)
 
+### P.S. If you don't have the csv archive from the Siemens Comfort panel. You can test the functionality by taking the archive file from the test_csv_archives folder. :+1:
