@@ -10,6 +10,6 @@
 - [Angular](https://angular.io)
 - [GraphJS](https://www.chartjs.org/)
 - [Angular Material](https://material.angular.io)
-- [Bootstrap] (https://getbootstrap.com/)
-- [Fontawesome] (https://fontawesome.com/)
+- [Bootstrap](https://getbootstrap.com/)
+- [Fontawesome](https://fontawesome.com/)
 
